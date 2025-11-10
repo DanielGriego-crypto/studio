@@ -23,8 +23,8 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
             setHasCopied(true);
             setTimeout(() => setHasCopied(false), 2000);
             toast({
-                title: "Скопировано!",
-                description: "Реферальная ссылка скопирована в буфер обмена.",
+                title: "Copied!",
+                description: "Referral link copied to clipboard.",
             });
         });
     };
@@ -32,14 +32,14 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
     return (
         <DialogContent className="bg-background/80 border-primary/20 backdrop-blur-lg max-w-sm">
             <DialogHeader>
-                <DialogTitle className="font-headline text-2xl text-primary text-center">Реферальная Программа</DialogTitle>
+                <DialogTitle className="font-headline text-2xl text-primary text-center">CAissa Friends</DialogTitle>
                 <DialogDescription className="text-center text-white/70 pt-2">
-                    Приглашайте друзей и получайте награды вместе!
+                    Invite friends and get rewards together!
                 </DialogDescription>
             </DialogHeader>
             <div className="space-y-6 py-4">
                 <div className="space-y-2">
-                    <label className="text-sm font-medium text-white/80">Ваша реферальная ссылка</label>
+                    <label className="text-sm font-medium text-white/80">Your referral link</label>
                     <div className="flex items-center space-x-2">
                         <Input
                             readOnly
@@ -56,20 +56,20 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
                     <div className="bg-black/40 p-4 rounded-lg border border-white/10">
                         <Users className="w-6 h-6 mx-auto text-primary mb-2" />
                         <p className="text-2xl font-bold text-white">{referralCount}</p>
-                        <p className="text-xs text-white/60">Приглашено</p>
+                        <p className="text-xs text-white/60">Invited</p>
                     </div>
                     <div className="bg-black/40 p-4 rounded-lg border border-white/10">
                         <Gift className="w-6 h-6 mx-auto text-primary mb-2" />
                         <p className="text-xl font-bold text-white">+30 <span className="text-sm">$CAI</span></p>
-                        <p className="text-xs text-white/60">За друга</p>
+                        <p className="text-xs text-white/60">Per friend</p>
                     </div>
                 </div>
 
                 <div className="bg-black/40 p-4 rounded-lg border border-white/10 flex items-center gap-4">
                     <TrendingUp className="w-8 h-8 text-primary" />
                     <div>
-                        <p className="font-bold text-white">Пассивный доход</p>
-                        <p className="text-sm text-white/70">Получайте <span className="font-bold text-primary">0.8%</span> с каждого пополнения баланса вашими рефералами.</p>
+                        <p className="font-bold text-white">Passive income</p>
+                        <p className="text-sm text-white/70">Get <span className="font-bold text-primary">0.8%</span> from every deposit your referrals make.</p>
                     </div>
                 </div>
             </div>
