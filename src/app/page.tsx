@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Crown, UserPlus, Swords, Users, Trophy, Gift } from 'lucide-react';
+import { Crown, UserPlus, Swords, Users, Trophy, Gift, Sparkles, Star, Paintbrush } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DivisionIndicator } from '@/components/caissa/division-indicator';
 import Particles from '@/components/caissa/particles';
@@ -70,12 +70,25 @@ export default function Home() {
       )}
 
       {/* Header */}
-      <header className="absolute top-0 right-0 p-6 z-20">
+      <header className="absolute top-0 left-0 right-0 p-4 z-20 flex justify-between items-center gap-2">
         <Link href="/wallet" passHref>
-          <div className="bg-black/50 backdrop-blur-sm text-primary font-bold px-4 py-2 rounded-lg border border-primary/20 shadow-lg cursor-pointer hover:bg-primary/10 transition-colors">
-            {balance !== null ? balance.toLocaleString('ru-RU') : '...'} $CAI
+          <div className="bg-black/50 backdrop-blur-sm text-primary font-bold px-4 py-2 rounded-lg border border-primary/20 shadow-lg cursor-pointer hover:bg-primary/10 transition-colors text-lg">
+            {balance !== null ? balance.toLocaleString('ru-RU') : '...'} <span className="text-yellow-400">$CAI</span>
           </div>
         </Link>
+        <div className="flex-1 flex justify-end bg-black/50 backdrop-blur-sm p-1 rounded-lg border border-primary/20 shadow-lg gap-1">
+          <Button variant="ghost" size="sm" className="flex-1 text-xs h-8">
+            <Star className="w-4 h-4 mr-1 text-primary" /> Ref
+          </Button>
+          <Link href="/league" className="flex-1">
+            <Button variant="ghost" size="sm" className="w-full text-xs h-8">
+                <Trophy className="w-4 h-4 mr-1 text-primary" /> Лиги
+            </Button>
+          </Link>
+          <Button variant="ghost" size="sm" className="flex-1 text-xs h-8">
+            <Paintbrush className="w-4 h-4 mr-1 text-primary" /> Customize
+          </Button>
+        </div>
       </header>
       
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-8 z-10 transition-all duration-500" style={{ transform: showGameOptions ? 'translateY(-10%)' : 'translateY(0)' }}>
@@ -101,7 +114,6 @@ export default function Home() {
                 <span className="relative z-10">{showGameOptions ? 'Закрыть' : 'Заработать $CAI'}</span>
                 <span className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
                 <span className="absolute inset-0 scale-0 group-hover:scale-125 transition-transform duration-500 ease-out bg-white/30 rounded-full"></span>
-
               </Button>
             </div>
         </div>
@@ -145,3 +157,5 @@ const GameOptionButton = ({ icon: Icon, label, sublabel, bonus, className }: { i
         {bonus && <span className="absolute top-2 right-2 text-xs font-bold text-primary bg-black/50 px-2 py-0.5 rounded-full">{bonus}</span>}
     </Button>
 );
+
+    
