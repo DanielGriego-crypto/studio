@@ -101,7 +101,7 @@ export default {
           },
         },
         'tilt': {
-          '0%, 50%, 100%': {
+          '0%, 100%': {
             transform: 'rotate(0deg)',
           },
           '25%': {
@@ -117,7 +117,7 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'spin-slow': 'spin-slow 20s linear infinite',
         'pulse-slow': 'pulse-slow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'tilt': 'tilt 10s infinite linear',
+        'tilt': 'tilt 4s infinite ease-in-out',
       },
     },
   },

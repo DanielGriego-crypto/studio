@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Crown, UserPlus, Swords, Users, Trophy, Gift, X } from 'lucide-react';
+import { Crown, UserPlus, Swords, Users, Trophy, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DivisionIndicator } from '@/components/caissa/division-indicator';
 import Particles from '@/components/caissa/particles';
@@ -56,7 +56,7 @@ export default function Home() {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-primary rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
               <Button 
                 size="lg" 
-                className="relative w-full h-16 text-lg font-bold rounded-xl bg-gradient-to-br from-primary to-yellow-600 text-primary-foreground shadow-lg shadow-primary/20 ring-2 ring-primary/50 hover:shadow-primary/40 hover:scale-105 transition-all duration-300 font-headline tracking-wider"
+                className="relative w-full h-16 text-lg font-bold rounded-xl bg-gradient-to-br from-primary to-yellow-600 text-primary-foreground shadow-lg shadow-primary/20 ring-2 ring-primary/50 hover:shadow-primary/40 hover:scale-105 transition-all duration-300 font-headline tracking-wider animate-pulse-slow"
                 onClick={() => setShowGameOptions(!showGameOptions)}
               >
                 {showGameOptions ? 'Закрыть' : 'Заработать $CAI'}
@@ -88,19 +88,7 @@ export default function Home() {
       </div>
 
       {clientBalance !== null && <DivisionIndicator balance={clientBalance} />}
-      <style jsx global>{`
-        @keyframes tilt {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-        .animate-tilt {
-          animation: tilt 10s linear infinite;
-        }
-      `}</style>
+      
     </main>
   );
 }
