@@ -107,6 +107,11 @@ export default function LeaguePage() {
     const currentUserRank = mockPlayers.findIndex(p => p.isCurrentUser) + 1;
     
     const divisionToShow = selectedDivision || currentDivision;
+    
+    const currentDivisionIndex = DIVISIONS.findIndex(d => d.name === currentDivision.name);
+    const nextDivision = currentDivisionIndex !== -1 && currentDivisionIndex < DIVISIONS.length - 1 ? DIVISIONS[currentDivisionIndex + 1] : null;
+    const neededForNext = nextDivision ? nextDivision.minBalance - balance : 0;
+
 
     const handleBack = () => {
         if (view === 'leaderboard' && selectedDivision) {
@@ -123,8 +128,6 @@ export default function LeaguePage() {
 
     const getPageTitle = () => {
         if (view === 'all_divisions') return 'Дивизионы';
-        if (selectedDivision) return selectedDivision.name;
-        if (currentDivision && !selectedDivision) return currentDivision.name;
         return 'Лиги';
     }
 
@@ -138,7 +141,7 @@ export default function LeaguePage() {
       <Particles quantity={30} />
       
       <header className="absolute top-0 left-0 right-0 p-4 z-20 flex items-center">
-        {(view === 'all_divisions' || selectedDivision) ? (
+        {(view === 'all_divisions' || (selectedDivision && selectedDivision.name !== currentDivision.name)) ? (
             <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10" onClick={handleBack}>
                 <ArrowLeft className="h-6 w-6" />
             </Button>
@@ -150,7 +153,7 @@ export default function LeaguePage() {
             </Link>
         )}
         <h1 className="font-headline text-xl font-bold text-primary text-center flex-1 uppercase">
-          Лиги
+          {getPageTitle()}
         </h1>
         <div className="w-10"></div> {/* Spacer to balance the header */}
       </header>
@@ -160,7 +163,7 @@ export default function LeaguePage() {
             <>
                  <Card className="w-full bg-black/50 backdrop-blur-sm border-none text-center mb-4">
                     <CardHeader className="pb-2">
-                        <CardDescription className="text-white/70">Ваш текущий дивизион</CardDescription>
+                        <CardDescription className="text-white/70">Текущая лига</CardDescription>
                         <CardTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400 flex items-center justify-center gap-2 uppercase" style={{ textShadow: '0 0 10px hsl(var(--primary) / 0.5)' }}>
                             <divisionToShow.Icon className="w-7 h-7" />
                             {divisionToShow.name}
@@ -168,6 +171,11 @@ export default function LeaguePage() {
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-white/70">Место в дивизионе: <span className="font-bold text-primary">{currentUserRank}</span></p>
+                        {clientReady && nextDivision && neededForNext > 0 && (
+                            <p className="text-xs text-white/60 mt-1">
+                                Еще {neededForNext.toLocaleString('ru-RU')} $CAI до <span className="font-bold text-primary">{nextDivision.name}</span>
+                            </p>
+                        )}
                     </CardContent>
                 </Card>
 
