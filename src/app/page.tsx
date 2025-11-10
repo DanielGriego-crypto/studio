@@ -10,7 +10,7 @@ import Particles from '@/components/caissa/particles';
 import { cn } from '@/lib/utils';
 
 export default function Home() {
-  const [balance, setBalance] = React.useState(7500); // Mock balance for demo
+  const [balance] = React.useState(7500); // Mock balance for demo
   const [showGameOptions, setShowGameOptions] = React.useState(false);
 
   const [clientBalance, setClientBalance] = React.useState<number | null>(null);
@@ -34,7 +34,7 @@ export default function Home() {
       <header className="absolute top-0 right-0 p-6 z-20">
         <Link href="/wallet" passHref>
           <div className="bg-black/50 backdrop-blur-sm text-primary font-bold px-4 py-2 rounded-lg border border-primary/20 shadow-lg cursor-pointer hover:bg-primary/10 transition-colors">
-            Баланс: {clientBalance !== null ? clientBalance.toLocaleString() : '...'} $CAI
+            Баланс: {clientBalance !== null ? clientBalance.toLocaleString('ru-RU') : '...'} $CAI
           </div>
         </Link>
       </header>

@@ -11,7 +11,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -55,7 +54,12 @@ const ArrowDown = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 export default function WalletPage() {
-  const [balance] = React.useState(7500);
+    const [balance] = React.useState(7500);
+    const [clientReady, setClientReady] = React.useState(false);
+
+    React.useEffect(() => {
+        setClientReady(true);
+    }, []);
 
   return (
     <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
@@ -78,7 +82,7 @@ export default function WalletPage() {
           <CardHeader>
             <CardDescription className="text-white/70">Текущий баланс</CardDescription>
             <CardTitle className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400" style={{ textShadow: '0 0 10px hsl(var(--primary) / 0.5)' }}>
-              {balance.toLocaleString()} $CAI
+              {clientReady ? balance.toLocaleString('ru-RU') : '...'} $CAI
             </CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-4">
@@ -94,7 +98,7 @@ export default function WalletPage() {
         <div className="w-full mt-6">
             <h2 className="text-lg font-bold text-white/90 mb-4">История транзакций</h2>
             <div className="space-y-3">
-            {mockTransactions.map((tx) => (
+            {clientReady && mockTransactions.map((tx) => (
               <div key={tx.id} className="flex items-center justify-between bg-black/40 p-3 rounded-lg border border-white/10">
                 <div className="flex items-center gap-3">
                   <div className={cn("p-2 rounded-full", tx.amount > 0 ? "bg-green-500/10" : "bg-red-500/10")}>
@@ -106,7 +110,7 @@ export default function WalletPage() {
                   </div>
                 </div>
                 <p className={cn("font-bold", tx.amount > 0 ? "text-green-400" : "text-red-400")}>
-                  {tx.amount > 0 ? '+' : ''}{tx.amount.toLocaleString()} $CAI
+                  {tx.amount > 0 ? '+' : ''}{tx.amount.toLocaleString('ru-RU')} $CAI
                 </p>
               </div>
             ))}
