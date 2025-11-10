@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Crown, Users, BarChart, ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowLeft, Crown, Users, BarChart, ArrowUp, ArrowDown, Medal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Particles from '@/components/caissa/particles';
 import { cn } from '@/lib/utils';
@@ -50,29 +50,40 @@ const mockPlayers = [
     { id: '6', name: 'PawnMaster', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026708d', elo: 1250, rankChange: 0 },
 ].sort((a, b) => b.elo - a.elo);
 
+const getRankColor = (rank: number) => {
+    if (rank === 1) return "text-yellow-400";
+    if (rank === 2) return "text-slate-300";
+    if (rank === 3) return "text-yellow-600";
+    return "text-white/70";
+}
 
 const PlayerRow = ({ player, rank }: { player: typeof mockPlayers[0], rank: number }) => (
     <div className={cn(
-        "flex items-center gap-3 bg-black/40 p-3 rounded-lg border",
+        "flex items-center gap-3 bg-black/40 p-2.5 rounded-lg border",
         player.isCurrentUser ? "border-primary/50" : "border-white/10"
     )}>
-        <span className={cn("font-bold text-lg w-6 text-center", player.isCurrentUser ? "text-primary": "text-white/70")}>{rank}</span>
-        <Avatar className="h-10 w-10 border-2 border-primary/30">
+        <span className={cn("font-bold text-base w-6 text-center", player.isCurrentUser ? "text-primary": "text-white/70")}>
+            {rank}
+        </span>
+        {rank <= 3 ? (
+            <Medal className={cn("w-5 h-5", getRankColor(rank))} />
+        ) : <div className="w-5 h-5" /> }
+        <Avatar className="h-9 w-9 border-2 border-primary/30">
             <AvatarImage src={player.avatar} />
             <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="flex-1">
-            <p className={cn("font-semibold", player.isCurrentUser ? "text-primary": "text-white/90")}>{player.name}</p>
-            <p className="text-sm text-white/60 font-bold">{player.elo} ELO</p>
+            <p className={cn("font-semibold text-sm", player.isCurrentUser ? "text-primary": "text-white/90")}>{player.name}</p>
+            <p className="text-xs text-white/60 font-bold">{player.elo} ELO</p>
         </div>
         <div className={cn(
-            "flex items-center font-bold text-sm",
+            "flex items-center font-bold text-xs",
             player.rankChange > 0 && "text-green-400",
             player.rankChange < 0 && "text-red-400",
             player.rankChange === 0 && "text-gray-500",
         )}>
-            {player.rankChange > 0 && <ArrowUp className="w-4 h-4 mr-1" />}
-            {player.rankChange < 0 && <ArrowDown className="w-4 h-4 mr-1" />}
+            {player.rankChange > 0 && <ArrowUp className="w-3 h-3 mr-1" />}
+            {player.rankChange < 0 && <ArrowDown className="w-3 h-3 mr-1" />}
             {player.rankChange !== 0 ? Math.abs(player.rankChange) : '-'}
         </div>
     </div>
@@ -82,6 +93,7 @@ const PlayerRow = ({ player, rank }: { player: typeof mockPlayers[0], rank: numb
 export default function LeaguePage() {
     const [balance] = React.useState(1350); // Mock balance
     const currentDivision = getDivision(balance);
+    const currentUserRank = mockPlayers.findIndex(p => p.isCurrentUser) + 1;
 
   return (
     <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
@@ -101,13 +113,16 @@ export default function LeaguePage() {
       
       <div className="flex-1 flex flex-col items-center justify-start pt-20 px-4 z-10 overflow-y-auto no-scrollbar pb-4">
         <Card className="w-full bg-black/50 backdrop-blur-sm border-none text-center mb-6">
-            <CardHeader>
+            <CardHeader className="pb-2">
                 <CardDescription className="text-white/70">Ваш текущий дивизион</CardDescription>
-                <CardTitle className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400 flex items-center justify-center gap-2" style={{ textShadow: '0 0 10px hsl(var(--primary) / 0.5)' }}>
-                    <currentDivision.Icon className="w-8 h-8" />
+                <CardTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400 flex items-center justify-center gap-2" style={{ textShadow: '0 0 10px hsl(var(--primary) / 0.5)' }}>
+                    <currentDivision.Icon className="w-7 h-7" />
                     {currentDivision.name}
                 </CardTitle>
             </CardHeader>
+            <CardContent>
+                <p className="text-sm text-white/70">Место в дивизионе: <span className="font-bold text-primary">{currentUserRank}</span></p>
+            </CardContent>
         </Card>
 
         <Tabs defaultValue="divisions" className="w-full">
@@ -121,7 +136,7 @@ export default function LeaguePage() {
                     <DivisionCard key={division.name} division={division} isCurrent={division.name === currentDivision.name} />
                 ))}
             </TabsContent>
-            <TabsContent value="players" className="mt-4 space-y-3">
+            <TabsContent value="players" className="mt-4 space-y-2">
                  {mockPlayers.map((player, index) => (
                     <PlayerRow key={player.id} player={player} rank={index + 1} />
                 ))}
