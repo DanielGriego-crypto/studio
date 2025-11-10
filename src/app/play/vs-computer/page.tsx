@@ -21,9 +21,7 @@ import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { useDoc } from '@/firebase/firestore/use-doc';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-
 
 const PlayerInfo = ({ name, avatar, balance, time, isComputer = false }: { name: string, avatar: string, balance?: number | null, time: number, isComputer?: boolean }) => {
     const formatTime = (seconds: number) => {
@@ -187,8 +185,11 @@ export default function PlayVsComputerPage() {
         </Button>
       </header>
       
-      <div className="flex flex-col justify-between flex-1 pt-16 z-10">
-        <PlayerInfo name="Caïssa Bot" avatar="https://i.pravatar.cc/150?u=caissa-bot" time={computerTime} isComputer />
+      <div className="flex flex-col justify-center flex-1 pt-16 z-10">
+        
+        <div className="w-full flex justify-center mb-2">
+            <PlayerInfo name="Caïssa Bot" avatar="https://i.pravatar.cc/150?u=caissa-bot" time={computerTime} isComputer />
+        </div>
         
         <div 
           className="w-full aspect-square my-auto"
@@ -209,25 +210,25 @@ export default function PlayVsComputerPage() {
                 customDarkSquareStyle={{ backgroundColor: 'hsl(var(--secondary))' }}
                 customLightSquareStyle={{ backgroundColor: 'hsl(var(--accent))' }}
                 customDropSquareStyle={{ boxShadow: 'inset 0 0 1px 4px hsl(var(--primary))' }}
-                customPieces={{
-                  wP: ({ squareWidth }) => <img src={`/pieces/wP.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  wN: ({ squareWidth }) => <img src={`/pieces/wN.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  wB: ({ squareWidth }) => <img src={`/pieces/wB.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  wR: ({ squareWidth }) => <img src={`/pieces/wR.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  wQ: ({ squareWidth }) => <img src={`/pieces/wQ.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  wK: ({ squareWidth }) => <img src={`/pieces/wK.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bP: ({ squareWidth }) => <img src={`/pieces/bP.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bN: ({ squareWidth }) => <img src={`/pieces/bN.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bB: ({ squareWidth }) => <img src={`/pieces/bB.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bR: ({ squareWidth }) => <img src={`/pieces/bR.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bQ: ({ squareWidth }) => <img src={`/pieces/bQ.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bK: ({ squareWidth }) => <img src={`/pieces/bK.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                customPieceComponents={{
+                  wP: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wP.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  wN: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wN.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  wB: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wB.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  wR: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wR.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  wQ: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wQ.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  wK: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wK.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bP: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bP.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bN: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bN.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bB: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bB.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bR: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bR.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bQ: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bQ.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bK: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bK.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
                 }}
             />
           </div>
         </div>
 
-        <div className="w-full flex flex-col items-center gap-2">
+        <div className="w-full flex flex-col items-center gap-2 mt-2">
             <p className="text-center text-primary font-bold h-6">
                 {game.isCheck() && !game.isGameOver() ? 'Шах!' : ''}
             </p>
@@ -271,5 +272,3 @@ export default function PlayVsComputerPage() {
     </main>
   );
 }
-
-    
