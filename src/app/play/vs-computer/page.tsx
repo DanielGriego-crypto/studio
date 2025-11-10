@@ -187,12 +187,12 @@ export default function PlayVsComputerPage() {
         </Button>
       </header>
       
-      <div className="flex-1 flex flex-col items-center justify-center pt-16 z-10 gap-4">
+      <div className="flex flex-col justify-between flex-1 pt-16 z-10">
         <PlayerInfo name="Caïssa Bot" avatar="https://i.pravatar.cc/150?u=caissa-bot" time={computerTime} isComputer />
         
         <div 
-          className="w-full aspect-square"
-          style={{ perspective: '1000px' }}
+          className="w-full aspect-square my-auto"
+          style={{ perspective: '1000px', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))' }}
         >
           <div 
             className="w-full h-full transition-transform duration-500 rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg shadow-primary/20"
@@ -209,6 +209,20 @@ export default function PlayVsComputerPage() {
                 customDarkSquareStyle={{ backgroundColor: 'hsl(var(--secondary))' }}
                 customLightSquareStyle={{ backgroundColor: 'hsl(var(--accent))' }}
                 customDropSquareStyle={{ boxShadow: 'inset 0 0 1px 4px hsl(var(--primary))' }}
+                customPieces={{
+                  wP: ({ squareWidth }) => <img src={`/pieces/wP.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  wN: ({ squareWidth }) => <img src={`/pieces/wN.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  wB: ({ squareWidth }) => <img src={`/pieces/wB.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  wR: ({ squareWidth }) => <img src={`/pieces/wR.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  wQ: ({ squareWidth }) => <img src={`/pieces/wQ.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  wK: ({ squareWidth }) => <img src={`/pieces/wK.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bP: ({ squareWidth }) => <img src={`/pieces/bP.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bN: ({ squareWidth }) => <img src={`/pieces/bN.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bB: ({ squareWidth }) => <img src={`/pieces/bB.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bR: ({ squareWidth }) => <img src={`/pieces/bR.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bQ: ({ squareWidth }) => <img src={`/pieces/bQ.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                  bK: ({ squareWidth }) => <img src={`/pieces/bK.png`} width={squareWidth} height={squareWidth} style={{filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                }}
             />
           </div>
         </div>
