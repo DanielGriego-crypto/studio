@@ -18,7 +18,7 @@ export function DivisionIndicator({ balance }: DivisionIndicatorProps) {
   const nextDivision = DIVISIONS[DIVISIONS.indexOf(division) + 1];
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-sm p-4 z-40">
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-sm p-4 z-40 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)]">
       <Link href="/league" passHref>
         <div className={cn(
           "bg-black/70 backdrop-blur-md border border-primary/20 p-2 rounded-xl shadow-lg shadow-primary/10",
