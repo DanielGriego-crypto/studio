@@ -3,7 +3,8 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Users, Medal, ArrowUp, ArrowDown, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Users, Medal, ArrowUp, ArrowDown, ChevronDown, RefreshCw } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import Particles from '@/components/caissa/particles';
 import { cn } from '@/lib/utils';
@@ -50,7 +51,7 @@ const DivisionCard = ({ division, isCurrent, onClick }: { division: Division, is
     );
 };
 
-const mockPlayers = [
+const initialMockPlayers = [
     { id: '1', name: 'You', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026703d', cai: 1350, rankChange: 35, isCurrentUser: true, gamesPlayed: 5 },
     { id: '2', name: 'Grandmaster_G', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d', cai: 1420, rankChange: -12, gamesPlayed: 8 },
     { id: '3', name: 'ChessQueen', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026705d', cai: 1380, rankChange: 5, gamesPlayed: 2 },
@@ -63,7 +64,7 @@ const mockPlayers = [
     { id: '10', name: 'Player10', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026702d', cai: 1120, rankChange: -5, gamesPlayed: 2 },
     { id: '11', name: 'Player11', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026711d', cai: 1100, rankChange: 22, gamesPlayed: 4 },
     { id: '12', name: 'Player12', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026712d', cai: 1080, rankChange: -3, gamesPlayed: 1 },
-].sort((a, b) => b.cai - a.cai);
+];
 
 const getRankColor = (rank: number) => {
     if (rank === 1) return "text-yellow-400";
@@ -72,17 +73,23 @@ const getRankColor = (rank: number) => {
     return "text-white/70";
 }
 
-const PlayerRow = ({ player, rank }: { player: typeof mockPlayers[0], rank: number }) => (
-    <div className={cn(
-        "flex items-center gap-3 bg-black/40 p-2 rounded-lg border",
-        player.isCurrentUser ? "border-primary/50" : "border-white/10"
+const PlayerRow = ({ player, rank }: { player: typeof initialMockPlayers[0], rank: number }) => (
+    <motion.div 
+        layout
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className={cn(
+            "flex items-center gap-3 bg-black/40 p-2 rounded-lg border",
+            player.isCurrentUser ? "border-primary/50" : "border-white/10"
     )}>
         <span className={cn("font-bold text-base w-6 text-center", player.isCurrentUser ? "text-primary": getRankColor(rank))}>
             {rank}
         </span>
-        {rank <= 3 ? (
-            <Medal className={cn("w-5 h-5", getRankColor(rank))} />
-        ) : <div className="w-5 h-5" /> }
+        <div className="w-5 h-5 flex items-center justify-center">
+            {rank <= 3 && <Medal className={cn("w-5 h-5", getRankColor(rank))} />}
+        </div>
         <Avatar className="h-8 w-8 border-2 border-primary/30">
             <AvatarImage src={player.avatar} />
             <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
@@ -108,19 +115,21 @@ const PlayerRow = ({ player, rank }: { player: typeof mockPlayers[0], rank: numb
                 <p>Изменение за 2 часа ({player.gamesPlayed} игр)</p>
             </TooltipContent>
         </Tooltip>
-    </div>
+    </motion.div>
 );
 
 
 export default function LeaguePage() {
     const [balance] = React.useState(1350); // Mock balance
+    const [players, setPlayers] = React.useState(initialMockPlayers);
     const [selectedDivision, setSelectedDivision] = React.useState<Division | null>(null);
     const [view, setView] = React.useState<'leaderboard' | 'all_divisions'>('leaderboard');
     const [visiblePlayersCount, setVisiblePlayersCount] = React.useState(5);
+    const [isRefreshing, setIsRefreshing] = React.useState(false);
 
     const currentDivision = getDivision(balance);
     
-    const sortedPlayers = React.useMemo(() => [...mockPlayers].sort((a, b) => b.cai - a.cai), []);
+    const sortedPlayers = React.useMemo(() => [...players].sort((a, b) => b.cai - a.cai), [players]);
     const currentUserRank = sortedPlayers.findIndex(p => p.isCurrentUser) + 1;
     
     const divisionToShow = selectedDivision || currentDivision;
@@ -162,6 +171,25 @@ export default function LeaguePage() {
         setVisiblePlayersCount(prevCount => Math.min(prevCount + 5, sortedPlayers.length));
     };
 
+    const handleRefresh = () => {
+        setIsRefreshing(true);
+        // Simulate data refresh
+        setTimeout(() => {
+            setPlayers(prevPlayers => {
+                return prevPlayers.map(p => {
+                    const change = Math.floor(Math.random() * 51) - 25; // -25 to +25
+                    return {
+                        ...p,
+                        cai: Math.max(0, p.cai + change),
+                        rankChange: change,
+                        gamesPlayed: p.gamesPlayed + Math.round(Math.random())
+                    };
+                });
+            });
+            setIsRefreshing(false);
+        }, 500);
+    };
+
   return (
     <TooltipProvider>
     <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
@@ -169,12 +197,12 @@ export default function LeaguePage() {
       
       <header className="absolute top-0 left-0 right-0 p-4 z-20 flex items-center">
         {(view === 'all_divisions' || (selectedDivision && selectedDivision.name !== currentDivision.name)) ? (
-            <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10" onClick={handleBack}>
+            <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10 w-10" onClick={handleBack}>
                 <ArrowLeft className="h-6 w-6" />
             </Button>
         ) : (
             <Link href="/" passHref>
-              <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10">
+              <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10 w-10">
                 <ArrowLeft className="h-6 w-6" />
               </Button>
             </Link>
@@ -182,7 +210,9 @@ export default function LeaguePage() {
         <h1 className="font-headline text-xl font-bold text-primary text-center flex-1 uppercase">
           {getPageTitle()}
         </h1>
-        <div className="w-10"></div> {/* Spacer to balance the header */}
+        <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10 w-10" onClick={handleRefresh} disabled={isRefreshing}>
+            <RefreshCw className={cn("h-5 w-5", isRefreshing && "animate-spin")} />
+        </Button>
       </header>
       
       <div className="flex-1 flex flex-col items-center justify-start pt-20 px-4 z-10 overflow-y-auto no-scrollbar pb-4">
@@ -192,7 +222,7 @@ export default function LeaguePage() {
                     <CardHeader className="pb-2">
                         <CardDescription className="text-white/70">Текущая лига</CardDescription>
                         <CardTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400 flex items-center justify-center gap-2 uppercase" style={{ textShadow: '0 0 10px hsl(var(--primary) / 0.5)' }}>
-                            <divisionToShow.Icon className="w-7 h-7" />
+                            <divisionToShow.Icon className="w-7 h-7 text-primary" />
                             {divisionToShow.name}
                         </CardTitle>
                     </CardHeader>
@@ -212,9 +242,11 @@ export default function LeaguePage() {
                         <TabsTrigger value="owners">Владельцы</TabsTrigger>
                     </TabsList>
                     <TabsContent value="players" className="mt-4 space-y-2">
-                        {clientReady && playersToShow.map((player, index) => (
-                            <PlayerRow key={player.id} player={player} rank={index + 1} />
-                        ))}
+                        <AnimatePresence>
+                            {clientReady && playersToShow.map((player, index) => (
+                                <PlayerRow key={player.id} player={player} rank={index + 1} />
+                            ))}
+                        </AnimatePresence>
                          {canLoadMore && (
                             <Button variant="link" className="w-full text-primary" onClick={handleLoadMore}>
                                 Показать больше
