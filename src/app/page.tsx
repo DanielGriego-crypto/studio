@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Crown, UserPlus, Swords, Users, Trophy, Gift, Sparkles, Star, Paintbrush } from 'lucide-react';
+import { Crown, UserPlus, Swords, Users, Trophy, Gift, Sparkles, Star, Paintbrush, BrainCircuit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DivisionIndicator } from '@/components/caissa/division-indicator';
 import Particles from '@/components/caissa/particles';
@@ -165,7 +165,9 @@ export default function Home() {
           <div className="grid grid-cols-2 gap-4">
               <GameOptionButton icon={UserPlus} label="Пригласить друга" bonus="+50 $CAI" />
               <GameOptionButton icon={Swords} label="Подбор игры" sublabel="(Дивизион)" />
-              <GameOptionButton icon={Users} label="Частный матч" />
+              <Link href="/play/vs-computer">
+                <GameOptionButton icon={BrainCircuit} label="Игра с компьютером" />
+              </Link>
               <GameOptionButton icon={Trophy} label="Турнир" />
               <Link href="/daily" className="col-span-2">
                 <GameOptionButton icon={Gift} label="Ежедневные задания" className="!h-20 !flex-row w-full" />
@@ -181,7 +183,7 @@ export default function Home() {
 }
 
 const GameOptionButton = ({ icon: Icon, label, sublabel, bonus, className }: { icon: React.ElementType, label: string, sublabel?: string, bonus?: string, className?: string }) => (
-    <Button variant="outline" className={cn("relative h-28 flex-col justify-center items-center gap-2 text-center border-primary/30 bg-primary/10 hover:bg-primary/20 text-white/90 rounded-xl transition-all duration-300 hover:scale-105 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10", className)}>
+    <Button variant="outline" className={cn("relative w-full h-28 flex-col justify-center items-center gap-2 text-center border-primary/30 bg-primary/10 hover:bg-primary/20 text-white/90 rounded-xl transition-all duration-300 hover:scale-105 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10", className)}>
         <Icon className="w-8 h-8 text-primary" />
         <div className="flex flex-col">
           <span className="font-headline text-sm font-semibold">{label}</span>
