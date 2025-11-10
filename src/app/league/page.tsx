@@ -20,6 +20,11 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 const DivisionCard = ({ division, isCurrent, onClick }: { division: Division, isCurrent: boolean, onClick: () => void }) => {
     const { Icon, name, minBalance, maxBalance } = division;
+    const [clientReady, setClientReady] = React.useState(false);
+    React.useEffect(() => {
+        setClientReady(true);
+    }, []);
+
     return (
         <button 
             onClick={onClick}
@@ -37,7 +42,7 @@ const DivisionCard = ({ division, isCurrent, onClick }: { division: Division, is
             <div className="flex-1">
                 <p className={cn("font-headline text-lg", isCurrent ? "text-primary" : "text-white")}>{name}</p>
                 <p className="text-sm text-white/60">
-                    {minBalance.toLocaleString()} - {maxBalance === Infinity ? '∞' : maxBalance.toLocaleString()} $CAI
+                    {clientReady ? `${minBalance.toLocaleString('ru-RU')} - ${maxBalance === Infinity ? '∞' : maxBalance.toLocaleString('ru-RU')} $CAI` : '...'}
                 </p>
             </div>
         </button>
