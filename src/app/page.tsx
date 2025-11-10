@@ -126,7 +126,7 @@ export default function Home() {
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-8 z-10 transition-all duration-500" style={{ transform: showGameOptions ? 'translateY(-10%)' : 'translateY(0)' }}>
           <div className="flex flex-col items-center justify-center space-y-4">
               <Crown className="w-16 h-16 text-primary" style={{filter: 'drop-shadow(0 0 15px hsl(var(--primary)))'}}/>
-              <h1 className="font-headline text-5xl tracking-wider font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400" style={{ textShadow: '0 0 20px hsl(var(--primary) / 0.5)' }}>
+              <h1 className="font-headline text-5xl tracking-wider font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400 animate-text-glow" style={{ textShadow: '0 0 20px hsl(var(--primary) / 0.5)' }}>
                   CAÏSSA CHESS
               </h1>
           </div>
@@ -190,5 +190,3 @@ const GameOptionButton = ({ icon: Icon, label, sublabel, bonus, className }: { i
         {bonus && <span className="absolute top-2 right-2 text-xs font-bold text-primary bg-black/50 px-2 py-0.5 rounded-full">{bonus}</span>}
     </Button>
 );
-
-    
