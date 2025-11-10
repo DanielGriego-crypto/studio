@@ -83,12 +83,6 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
                         </div>
                     </div>
                     
-                    <div className="bg-black/40 p-4 rounded-lg border border-white/10 text-center">
-                        <Wallet className="w-6 h-6 mx-auto text-primary mb-2" />
-                        <p className="text-2xl font-bold text-white">{totalEarnings.toLocaleString('ru-RU', { minimumFractionDigits: 2 })} <span className="text-sm">$CAI</span></p>
-                        <p className="text-xs text-white/60">Всего заработано</p>
-                    </div>
-
                     <button onClick={() => setActiveView('earnings')} className="w-full bg-black/40 p-4 rounded-lg border border-white/10 flex items-center gap-4 text-left hover:border-primary/50 transition-colors">
                         <TrendingUp className="w-8 h-8 text-primary" />
                         <div>
@@ -96,6 +90,13 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
                             <p className="text-sm text-white/70">Получайте <span className="font-bold text-primary">0.8%</span> с каждой победы ваших рефералов.</p>
                         </div>
                     </button>
+                    
+                    <div className="bg-black/40 p-4 rounded-lg border border-white/10 text-center">
+                        <Wallet className="w-6 h-6 mx-auto text-primary mb-2" />
+                        <p className="text-2xl font-bold text-white">{totalEarnings.toLocaleString('ru-RU', { minimumFractionDigits: 2 })} <span className="text-sm">$CAI</span></p>
+                        <p className="text-xs text-white/60">Всего заработано</p>
+                    </div>
+
                 </div>
             </div>
             
