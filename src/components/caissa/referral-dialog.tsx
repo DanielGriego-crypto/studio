@@ -47,7 +47,7 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
     };
 
     return (
-        <DialogContent className="bg-background/80 border-primary/20 backdrop-blur-lg max-w-sm p-0 overflow-hidden h-[600px] sm:h-[550px]">
+        <DialogContent className="bg-background/80 border-primary/20 backdrop-blur-lg max-w-sm p-0 h-[600px] sm:h-[550px] flex flex-col">
             <div className={cn("transition-opacity duration-300 w-full h-full flex flex-col", activeView !== 'main' ? 'opacity-0 pointer-events-none absolute' : 'opacity-100')}>
                 <DialogHeader className="p-6 pb-2 shrink-0">
                     <DialogTitle className="font-headline text-2xl text-primary text-center">CAÏSSA FRIENDS</DialogTitle>
