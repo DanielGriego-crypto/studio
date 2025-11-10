@@ -120,6 +120,30 @@ export default function LeaguePage() {
     const [view, setView] = React.useState<'leaderboard' | 'all_divisions'>('leaderboard');
     const [visiblePlayersCount, setVisiblePlayersCount] = React.useState(5);
     const [isRefreshing, setIsRefreshing] = React.useState(false);
+    const [headerVisible, setHeaderVisible] = React.useState(true);
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+    const lastScrollTop = React.useRef(0);
+
+    React.useEffect(() => {
+        const handleScroll = () => {
+            if (scrollRef.current) {
+                const { scrollTop } = scrollRef.current;
+                if (scrollTop > lastScrollTop.current && scrollTop > 50) {
+                    setHeaderVisible(false); // Scrolling down
+                } else {
+                    setHeaderVisible(true); // Scrolling up
+                }
+                lastScrollTop.current = scrollTop <= 0 ? 0 : scrollTop;
+            }
+        };
+
+        const currentScrollRef = scrollRef.current;
+        currentScrollRef?.addEventListener('scroll', handleScroll);
+
+        return () => {
+            currentScrollRef?.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     const currentDivision = getDivision(balance);
     
@@ -190,7 +214,10 @@ export default function LeaguePage() {
     <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
       <Particles quantity={30} />
       
-      <header className="absolute top-0 left-0 right-0 p-4 z-20 flex items-center">
+      <header className={cn(
+          "fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-sm p-4 z-30 flex items-center transition-transform duration-300 bg-background/80 backdrop-blur-sm",
+          headerVisible ? "translate-y-0" : "-translate-y-full"
+      )}>
         {(view === 'all_divisions' || (selectedDivision && selectedDivision.name !== currentDivision.name)) ? (
             <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10 w-10" onClick={handleBack}>
                 <ArrowLeft className="h-6 w-6" />
@@ -210,7 +237,7 @@ export default function LeaguePage() {
         </Button>
       </header>
       
-      <div className="flex-1 flex flex-col items-center justify-start pt-20 px-4 z-10 overflow-y-auto no-scrollbar pb-4">
+      <div ref={scrollRef} className="flex-1 flex flex-col items-center justify-start pt-20 px-4 z-10 overflow-y-auto no-scrollbar pb-4">
         {view === 'leaderboard' ? (
             <>
                  <Card className="w-full bg-black/50 backdrop-blur-sm border-none text-center mb-4">
