@@ -14,6 +14,8 @@ import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
 import { useAuth } from '@/firebase/provider';
 import { useDoc } from '@/firebase/firestore/use-doc';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+import { ReferralDialogContent } from '@/components/caissa/referral-dialog';
 
 
 export default function Home() {
@@ -57,12 +59,12 @@ export default function Home() {
   const { data: userData } = useDoc(userDocRef);
   
   const balance = userData ? userData.caissaBalance : null;
-
+  const referralCode = userData ? userData.referralCode : '';
 
   return (
     <TooltipProvider>
       <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
-        <div className="absolute inset-0 -z-10 animate-gradient-bg bg-gradient-to-br from-background via-yellow-950/20 to-background" />
+        <div className="absolute inset-0 -z-10 animate-gradient-bg bg-gradient-to-br from-background via-yellow-950/20 to-background bg-400%" />
         <Particles quantity={50} />
 
         {/* Backdrop */}
@@ -81,16 +83,21 @@ export default function Home() {
             </Button>
           </Link>
           <div className="flex justify-end bg-black/50 backdrop-blur-sm p-2 rounded-xl border border-primary/20 shadow-lg gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9 text-xs">
-                  <Star className="w-5 h-5 text-primary" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Referrals</p>
-              </TooltipContent>
-            </Tooltip>
+            <Dialog>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-9 w-9 text-xs">
+                      <Star className="w-5 h-5 text-primary" />
+                    </Button>
+                  </DialogTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Referrals</p>
+                </TooltipContent>
+              </Tooltip>
+              <ReferralDialogContent referralCode={referralCode} />
+            </Dialog>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link href="/league">
