@@ -22,6 +22,7 @@ import { doc } from 'firebase/firestore';
 import { useDoc } from '@/firebase/firestore/use-doc';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 const PlayerInfo = ({ name, avatar, balance, time, isComputer = false }: { name: string, avatar: string, balance?: number | null, time: number, isComputer?: boolean }) => {
     const formatTime = (seconds: number) => {
@@ -64,6 +65,11 @@ export default function PlayVsComputerPage() {
   const [computerTime, setComputerTime] = useState(600);
   const [activeTimer, setActiveTimer] = useState<'player' | 'computer' | null>('player');
   
+  const [moveFrom, setMoveFrom] = useState<Square | null>(null);
+  const [moveTo, setMoveTo] = useState<Square | null>(null);
+  const [showPromotionDialog, setShowPromotionDialog] = useState(false);
+  const [optionSquares, setOptionSquares] = useState({});
+
   const { user } = useUser();
   const firestore = useFirestore();
 
@@ -75,41 +81,6 @@ export default function PlayVsComputerPage() {
 
   const balance = userData ? userData.caissaBalance : null;
   const username = user?.displayName || 'Игрок';
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (activeTimer && !isGameOver) {
-      timer = setInterval(() => {
-        if (activeTimer === 'player') {
-          setPlayerTime(t => t > 0 ? t - 1 : 0);
-          if (playerTime <= 1) {
-            handleGameOver('Время вышло! Черные победили.');
-          }
-        } else {
-          setComputerTime(t => t > 0 ? t - 1 : 0);
-          if (computerTime <= 1) {
-            handleGameOver('Время вышло! Белые победили.');
-          }
-        }
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [activeTimer, isGameOver, playerTime, computerTime]);
-  
-  const makeComputerMove = useCallback(() => {
-    if (game.isGameOver() || game.isDraw() || game.moves().length === 0) {
-      handleGameOver();
-      return;
-    }
-    const possibleMoves = game.moves();
-    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-    game.move(possibleMoves[randomIndex]);
-    setPosition(game.fen());
-    setActiveTimer('player');
-    if (game.isGameOver() || game.isDraw()) {
-      handleGameOver();
-    }
-  }, [game]);
 
   const handleGameOver = useCallback((customMessage?: string) => {
     setActiveTimer(null);
@@ -131,29 +102,119 @@ export default function PlayVsComputerPage() {
     setGameOverMessage(message);
   }, [game]);
 
-  function onDrop(sourceSquare: Square, targetSquare: Square): boolean {
-    if (game.isGameOver() || game.turn() !== 'w') return false;
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (activeTimer && !isGameOver) {
+      timer = setInterval(() => {
+        if (activeTimer === 'player') {
+          setPlayerTime(t => {
+            if (t <= 1) {
+              handleGameOver('Время вышло! Черные победили.');
+              return 0;
+            }
+            return t - 1;
+          });
+        } else {
+          setComputerTime(t => {
+            if (t <= 1) {
+              handleGameOver('Время вышло! Белые победили.');
+              return 0;
+            }
+            return t - 1;
+          });
+        }
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [activeTimer, isGameOver, handleGameOver]);
+  
+  const makeComputerMove = useCallback(() => {
+    if (game.isGameOver()) {
+      handleGameOver();
+      return;
+    }
+    
+    const possibleMoves = game.moves();
+    if (possibleMoves.length === 0) {
+      handleGameOver();
+      return;
+    }
+    
+    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+    const move = possibleMoves[randomIndex];
+    game.move(move);
 
+    setPosition(game.fen());
+    setActiveTimer('player');
+    
+    if (game.isGameOver()) {
+      handleGameOver();
+    }
+  }, [game, handleGameOver]);
+
+  function onSquareClick(square: Square) {
+    // from square is not set
+    if (!moveFrom) {
+      const moves = game.moves({ square, verbose: true });
+      if (moves.length === 0) {
+        return;
+      }
+      setMoveFrom(square);
+      const newOptionSquares = moves.reduce((acc, move) => {
+        acc[move.to] = {
+          background: "rgba(255, 255, 0, 0.4)",
+        };
+        return acc;
+      }, {});
+      setOptionSquares(newOptionSquares);
+      return;
+    }
+
+    // from square is set
     try {
       const move = game.move({
-        from: sourceSquare,
-        to: targetSquare,
-        promotion: 'q',
+        from: moveFrom,
+        to: square,
+        promotion: 'q', // Always promote to queen for simplicity
       });
-      if (move === null) return false;
-    } catch (e) {
-      return false;
-    }
-    
-    setPosition(game.fen());
-    
-    if (game.isGameOver() || game.isDraw()){
+
+      // illegal move
+      if (move === null) {
+        // if user clicks on another of their pieces, select that piece
+        const moves = game.moves({ square, verbose: true });
+        if (moves.length > 0) {
+            setMoveFrom(square);
+            const newOptionSquares = moves.reduce((acc, move) => {
+                acc[move.to] = {
+                    background: "rgba(255, 255, 0, 0.4)",
+                };
+                return acc;
+            }, {});
+            setOptionSquares(newOptionSquares);
+        } else {
+            // otherwise, deselect
+            setMoveFrom(null);
+            setOptionSquares({});
+        }
+        return;
+      }
+      
+      setPosition(game.fen());
+      setMoveFrom(null);
+      setOptionSquares({});
+
+      if (game.isGameOver()) {
         handleGameOver();
-    } else {
+      } else {
         setActiveTimer('computer');
         window.setTimeout(makeComputerMove, 700);
+      }
+    } catch (e) {
+      console.log(e);
+      setMoveFrom(null);
+      setOptionSquares({});
+      return;
     }
-    return true;
   }
   
   function resetGame() {
@@ -165,6 +226,8 @@ export default function PlayVsComputerPage() {
     setPlayerTime(600);
     setComputerTime(600);
     setActiveTimer('player');
+    setMoveFrom(null);
+    setOptionSquares({});
   }
 
   return (
@@ -185,53 +248,48 @@ export default function PlayVsComputerPage() {
         </Button>
       </header>
       
-      <div className="flex flex-col justify-center flex-1 pt-16 z-10">
+      <div className="flex flex-col justify-center items-center flex-1 pt-16 z-10">
         
-        <div className="w-full flex justify-center mb-2">
-            <PlayerInfo name="Caïssa Bot" avatar="https://i.pravatar.cc/150?u=caissa-bot" time={computerTime} isComputer />
-        </div>
+        <PlayerInfo name="Caïssa Bot" avatar="https://i.pravatar.cc/150?u=caissa-bot" time={computerTime} isComputer />
         
         <div 
-          className="w-full aspect-square my-auto"
-          style={{ perspective: '1000px', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))' }}
+          className="w-full aspect-square my-4"
+          style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))' }}
         >
-          <div 
-            className="w-full h-full transition-transform duration-500 rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg shadow-primary/20"
-            style={{ transform: 'rotateX(25deg)' }}
-          >
-            <Chessboard 
-                position={position} 
-                onPieceDrop={onDrop}
-                boardWidth={400}
-                customBoardStyle={{
-                    borderRadius: '0.5rem',
-                    boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
-                }}
-                customDarkSquareStyle={{ backgroundColor: 'hsl(var(--secondary))' }}
-                customLightSquareStyle={{ backgroundColor: 'hsl(var(--accent))' }}
-                customDropSquareStyle={{ boxShadow: 'inset 0 0 1px 4px hsl(var(--primary))' }}
-                customPieceComponents={{
-                  wP: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wP.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  wN: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wN.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  wB: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wB.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  wR: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wR.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  wQ: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wQ.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  wK: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wK.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bP: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bP.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bN: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bN.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bB: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bB.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bR: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bR.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bQ: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bQ.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                  bK: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bK.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
-                }}
-            />
-          </div>
+          <Chessboard 
+              position={position} 
+              onSquareClick={onSquareClick}
+              boardWidth={360} // Adjusted for a bit of padding within max-w-sm
+              customBoardStyle={{
+                  borderRadius: '0.5rem',
+                  boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
+              }}
+              customDarkSquareStyle={{ backgroundColor: 'hsl(var(--secondary))' }}
+              customLightSquareStyle={{ backgroundColor: 'hsl(var(--accent))' }}
+              customSquareStyles={{
+                ...optionSquares,
+              }}
+              customPieces={{
+                wP: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wP.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                wN: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wN.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                wB: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wB.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                wR: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wR.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                wQ: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wQ.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                wK: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/wK.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                bP: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bP.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                bN: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bN.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                bB: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bB.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                bR: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bR.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                bQ: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bQ.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+                bK: ({ squareWidth }) => <div style={{width: squareWidth, height: squareWidth, backgroundImage: "url(/pieces/bK.png)", backgroundSize: '100%', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))'}} />,
+              }}
+          />
         </div>
 
-        <div className="w-full flex flex-col items-center gap-2 mt-2">
-            <p className="text-center text-primary font-bold h-6">
-                {game.isCheck() && !game.isGameOver() ? 'Шах!' : ''}
-            </p>
+        <div className="w-full flex flex-col items-center gap-2">
+            <div className="text-center text-primary font-bold h-6">
+                {game.isCheck() && !game.isGameOver() && 'Шах!'}
+            </div>
             <div className="flex items-center justify-between w-full gap-2">
                 <div className="flex-1">
                     <PlayerInfo name={username} avatar={user?.photoURL || `https://i.pravatar.cc/150?u=${user?.uid}`} balance={balance} time={playerTime} />
@@ -256,7 +314,7 @@ export default function PlayVsComputerPage() {
         </div>
       </div>
 
-      <AlertDialog open={isGameOver} onOpenChange={setIsGameOver}>
+      <AlertDialog open={isGameOver} onOpenChange={(open) => { if(!open) resetGame() }}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="text-primary font-headline text-2xl">Игра окончена</AlertDialogTitle>
@@ -272,3 +330,5 @@ export default function PlayVsComputerPage() {
     </main>
   );
 }
+
+    
