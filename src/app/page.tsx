@@ -53,10 +53,10 @@ export default function Home() {
 
         <div className="w-full pt-8">
             <div className="relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-primary rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-primary rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-glow"></div>
               <Button 
                 size="lg" 
-                className="relative w-full h-16 text-lg font-bold rounded-xl bg-gradient-to-br from-primary to-yellow-600 text-primary-foreground shadow-lg shadow-primary/20 ring-2 ring-primary/50 hover:shadow-primary/40 hover:scale-105 transition-all duration-300 font-headline tracking-wider animate-pulse-slow"
+                className="relative w-full h-16 text-lg font-bold rounded-full bg-gradient-to-br from-primary to-yellow-600 text-primary-foreground shadow-lg shadow-primary/20 ring-2 ring-primary/50 hover:shadow-primary/40 hover:scale-105 transition-all duration-300 font-headline tracking-wider animate-breathing"
                 onClick={() => setShowGameOptions(!showGameOptions)}
               >
                 {showGameOptions ? 'Закрыть' : 'Заработать $CAI'}
@@ -70,7 +70,7 @@ export default function Home() {
         className={cn(
           'absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur-lg rounded-t-3xl p-6 pt-4 transition-transform duration-500 ease-in-out z-30',
           showGameOptions ? 'translate-y-0' : 'translate-y-full',
-          'pb-[140px]' // Padding to not cover division indicator
+          'pb-[120px]' // Padding to not cover division indicator
         )}
       >
         <div className="w-full flex justify-center pb-2">
