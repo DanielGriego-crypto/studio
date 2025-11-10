@@ -53,10 +53,10 @@ export default function Home() {
 
         <div className="w-full pt-8">
             <div className="relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-600 to-primary rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-primary rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
               <Button 
                 size="lg" 
-                className="relative w-full h-16 text-lg font-bold rounded-xl bg-gradient-to-br from-primary to-yellow-600 text-primary-foreground shadow-lg shadow-primary/20 ring-2 ring-primary/50 hover:shadow-primary/40 hover:scale-105 transition-all duration-300"
+                className="relative w-full h-16 text-lg font-bold rounded-xl bg-gradient-to-br from-primary to-yellow-600 text-primary-foreground shadow-lg shadow-primary/20 ring-2 ring-primary/50 hover:shadow-primary/40 hover:scale-105 transition-all duration-300 font-headline tracking-wider"
                 onClick={() => setShowGameOptions(!showGameOptions)}
               >
                 {showGameOptions ? 'Закрыть' : 'Заработать $CAI'}
@@ -106,10 +106,10 @@ export default function Home() {
 }
 
 const GameOptionButton = ({ icon: Icon, label, sublabel, bonus, className }: { icon: React.ElementType, label: string, sublabel?: string, bonus?: string, className?: string }) => (
-    <Button variant="outline" className={cn("relative h-28 flex-col justify-center items-center gap-2 text-center border-primary/30 bg-primary/10 hover:bg-primary/20 text-white/90 rounded-xl transition-all duration-300 hover:scale-105 hover:border-primary/50", className)}>
+    <Button variant="outline" className={cn("relative h-28 flex-col justify-center items-center gap-2 text-center border-primary/30 bg-primary/10 hover:bg-primary/20 text-white/90 rounded-xl transition-all duration-300 hover:scale-105 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10", className)}>
         <Icon className="w-8 h-8 text-primary" />
         <div className="flex flex-col">
-          <span className="text-sm font-semibold">{label}</span>
+          <span className="font-headline text-sm font-semibold">{label}</span>
           {sublabel && <span className="text-xs text-muted-foreground">{sublabel}</span>}
         </div>
         {bonus && <span className="absolute top-2 right-2 text-xs font-bold text-primary bg-black/50 px-2 py-0.5 rounded-full">{bonus}</span>}
