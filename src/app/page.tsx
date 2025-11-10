@@ -13,6 +13,8 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
 import { useAuth } from '@/firebase/provider';
 import { useDoc } from '@/firebase/firestore/use-doc';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
 
 export default function Home() {
   const [showGameOptions, setShowGameOptions] = React.useState(false);
@@ -58,92 +60,115 @@ export default function Home() {
 
 
   return (
-    <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
-      <Particles quantity={50} />
+    <TooltipProvider>
+      <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
+        <Particles quantity={50} />
 
-      {/* Backdrop */}
-      {showGameOptions && (
-        <div
-          className="absolute inset-0 bg-black/50 z-20"
-          onClick={() => setShowGameOptions(false)}
-        />
-      )}
+        {/* Backdrop */}
+        {showGameOptions && (
+          <div
+            className="absolute inset-0 bg-black/50 z-20"
+            onClick={() => setShowGameOptions(false)}
+          />
+        )}
 
-      {/* Header */}
-      <header className="absolute top-0 left-0 right-0 p-4 z-20 flex justify-between items-center gap-2">
-        <Link href="/wallet" passHref>
-          <Button variant="ghost" size="sm" className="text-sm h-8 bg-black/50 backdrop-blur-sm border border-primary/20 shadow-lg text-primary font-bold hover:bg-primary/10 transition-colors">
-            {balance !== null ? balance.toLocaleString('ru-RU') : '...'} <span className="text-yellow-400 ml-1">$CAI</span>
-          </Button>
-        </Link>
-        <div className="flex-1 flex justify-end bg-black/50 backdrop-blur-sm p-1 rounded-lg border border-primary/20 shadow-lg gap-1">
-          <Button variant="ghost" size="sm" className="flex-1 text-xs h-8">
-            <Star className="w-4 h-4 mr-1 text-primary" /> Ref
-          </Button>
-          <Link href="/league" className="flex-1">
-            <Button variant="ghost" size="sm" className="w-full text-xs h-8">
-                <Trophy className="w-4 h-4 mr-1 text-primary" /> Лиги
+        {/* Header */}
+        <header className="absolute top-0 left-0 right-0 p-4 z-20 flex justify-between items-center gap-2">
+          <Link href="/wallet" passHref>
+            <Button variant="ghost" size="sm" className="text-sm h-8 bg-black/50 backdrop-blur-sm border border-primary/20 shadow-lg text-primary font-bold hover:bg-primary/10 transition-colors">
+              {balance !== null ? balance.toLocaleString('ru-RU') : '...'} <span className="text-yellow-400 ml-1">$CAI</span>
             </Button>
           </Link>
-          <Button variant="ghost" size="sm" className="flex-1 text-xs h-8">
-            <Paintbrush className="w-4 h-4 mr-1 text-primary" /> Customize
-          </Button>
-        </div>
-      </header>
-      
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-8 z-10 transition-all duration-500" style={{ transform: showGameOptions ? 'translateY(-10%)' : 'translateY(0)' }}>
-        <div className="flex flex-col items-center justify-center space-y-4">
-            <Crown className="w-16 h-16 text-primary" style={{filter: 'drop-shadow(0 0 15px hsl(var(--primary)))'}}/>
-            <h1 className="font-headline text-5xl tracking-wider font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400" style={{ textShadow: '0 0 20px hsl(var(--primary) / 0.5)' }}>
-                CAÏSSA CHESS
-            </h1>
-        </div>
+          <div className="flex justify-end bg-black/50 backdrop-blur-sm p-1 rounded-lg border border-primary/20 shadow-lg gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-xs">
+                  <Star className="w-4 h-4 text-primary" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Referrals</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href="/league">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-xs">
+                      <Trophy className="w-4 h-4 text-primary" />
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Лиги</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-xs">
+                  <Paintbrush className="w-4 h-4 text-primary" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Customize</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </header>
         
-        <p className="text-white/80 max-w-xs" style={{ textShadow: '0 0 5px hsl(var(--primary) / 0.3)'}}>
-            Интеллект — валюта 21 века. Зарабатывай $CAI умом, стратегией и волей.
-        </p>
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-8 z-10 transition-all duration-500" style={{ transform: showGameOptions ? 'translateY(-10%)' : 'translateY(0)' }}>
+          <div className="flex flex-col items-center justify-center space-y-4">
+              <Crown className="w-16 h-16 text-primary" style={{filter: 'drop-shadow(0 0 15px hsl(var(--primary)))'}}/>
+              <h1 className="font-headline text-5xl tracking-wider font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400" style={{ textShadow: '0 0 20px hsl(var(--primary) / 0.5)' }}>
+                  CAÏSSA CHESS
+              </h1>
+          </div>
+          
+          <p className="text-white/80 max-w-xs" style={{ textShadow: '0 0 5px hsl(var(--primary) / 0.3)'}}>
+              Интеллект — валюта 21 века. Зарабатывай $CAI умом, стратегией и волей.
+          </p>
 
-        <div className="w-full pt-8">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-primary rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-              <Button 
-                size="lg" 
-                className="relative w-full h-16 text-lg font-bold rounded-full bg-gradient-to-br from-primary to-yellow-600 text-primary-foreground shadow-lg shadow-primary/20 ring-2 ring-primary/50 hover:shadow-primary/40 hover:scale-105 transition-all duration-300 font-headline tracking-wider overflow-hidden group"
-                onClick={() => setShowGameOptions(!showGameOptions)}
-              >
-                <span className="relative z-10">{showGameOptions ? 'Закрыть' : 'Заработать $CAI'}</span>
-                <span className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
-                <span className="absolute inset-0 scale-0 group-hover:scale-125 transition-transform duration-500 ease-out bg-white/30 rounded-full"></span>
-              </Button>
-            </div>
+          <div className="w-full pt-8">
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-primary rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <Button 
+                  size="lg" 
+                  className="relative w-full h-16 text-lg font-bold rounded-full bg-gradient-to-br from-primary to-yellow-600 text-primary-foreground shadow-lg shadow-primary/20 ring-2 ring-primary/50 hover:shadow-primary/40 hover:scale-105 transition-all duration-300 font-headline tracking-wider overflow-hidden group"
+                  onClick={() => setShowGameOptions(!showGameOptions)}
+                >
+                  <span className="relative z-10">{showGameOptions ? 'Закрыть' : 'Заработать $CAI'}</span>
+                  <span className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
+                  <span className="absolute inset-0 scale-0 group-hover:scale-125 transition-transform duration-500 ease-out bg-white/30 rounded-full"></span>
+                </Button>
+              </div>
+          </div>
         </div>
-      </div>
 
-      {/* Game Options Panel */}
-      <div
-        className={cn(
-          'absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur-lg rounded-t-3xl p-6 pt-4 transition-transform duration-500 ease-in-out z-30',
-          showGameOptions ? 'translate-y-0' : 'translate-y-full',
-          'pb-[calc(env(safe-area-inset-bottom,0px)+120px)]'
-        )}
-      >
-        <div className="w-full flex justify-center pb-2">
-            <div className="w-12 h-1.5 bg-gray-600 rounded-full" />
+        {/* Game Options Panel */}
+        <div
+          className={cn(
+            'absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur-lg rounded-t-3xl p-6 pt-4 transition-transform duration-500 ease-in-out z-30',
+            showGameOptions ? 'translate-y-0' : 'translate-y-full',
+            'pb-[calc(env(safe-area-inset-bottom,0px)+120px)]'
+          )}
+        >
+          <div className="w-full flex justify-center pb-2">
+              <div className="w-12 h-1.5 bg-gray-600 rounded-full" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+              <GameOptionButton icon={UserPlus} label="Пригласить друга" bonus="+50 $CAI" />
+              <GameOptionButton icon={Swords} label="Подбор игры" sublabel="(Дивизион)" />
+              <GameOptionButton icon={Users} label="Частный матч" />
+              <GameOptionButton icon={Trophy} label="Турнир" />
+              <Link href="/daily" className="col-span-2">
+                <GameOptionButton icon={Gift} label="Ежедневные задания" className="!h-20 !flex-row w-full" />
+              </Link>
+          </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-            <GameOptionButton icon={UserPlus} label="Пригласить друга" bonus="+50 $CAI" />
-            <GameOptionButton icon={Swords} label="Подбор игры" sublabel="(Дивизион)" />
-            <GameOptionButton icon={Users} label="Частный матч" />
-            <GameOptionButton icon={Trophy} label="Турнир" />
-            <Link href="/daily" className="col-span-2">
-              <GameOptionButton icon={Gift} label="Ежедневные задания" className="!h-20 !flex-row w-full" />
-            </Link>
-        </div>
-      </div>
 
-      {balance !== null && <DivisionIndicator balance={balance} />}
-      
-    </main>
+        {balance !== null && <DivisionIndicator balance={balance} />}
+        
+      </main>
+    </TooltipProvider>
   );
 }
 
