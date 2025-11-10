@@ -58,6 +58,10 @@ const mockPlayers = [
     { id: '6', name: 'PawnMaster', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026708d', elo: 1250, rankChange: 0 },
     { id: '7', name: 'Checkmate_Champ', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026709d', elo: 1220, rankChange: 42 },
     { id: '8', name: 'Knight_Rider', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026710d', elo: 1180, rankChange: -8 },
+    { id: '9', name: 'Player9', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026701d', elo: 1150, rankChange: 15 },
+    { id: '10', name: 'Player10', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026702d', elo: 1120, rankChange: -5 },
+    { id: '11', name: 'Player11', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026711d', elo: 1100, rankChange: 22 },
+    { id: '12', name: 'Player12', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026712d', elo: 1080, rankChange: -3 },
 ].sort((a, b) => b.elo - a.elo);
 
 const getRankColor = (rank: number) => {
@@ -104,10 +108,12 @@ export default function LeaguePage() {
     const [balance] = React.useState(1350); // Mock balance
     const [selectedDivision, setSelectedDivision] = React.useState<Division | null>(null);
     const [view, setView] = React.useState<'leaderboard' | 'all_divisions'>('leaderboard');
-    const [showAllPlayers, setShowAllPlayers] = React.useState(false);
+    const [visiblePlayersCount, setVisiblePlayersCount] = React.useState(5);
 
     const currentDivision = getDivision(balance);
-    const currentUserRank = mockPlayers.findIndex(p => p.isCurrentUser) + 1;
+    
+    const sortedPlayers = React.useMemo(() => [...mockPlayers].sort((a, b) => b.elo - a.elo), []);
+    const currentUserRank = sortedPlayers.findIndex(p => p.isCurrentUser) + 1;
     
     const divisionToShow = selectedDivision || currentDivision;
     
@@ -119,6 +125,7 @@ export default function LeaguePage() {
     const handleBack = () => {
         if (view === 'leaderboard' && selectedDivision && selectedDivision.name !== currentDivision.name) {
             setSelectedDivision(null);
+            setVisiblePlayersCount(5);
         } else if (view === 'all_divisions') {
             setView('leaderboard');
         }
@@ -127,6 +134,7 @@ export default function LeaguePage() {
     const handleDivisionClick = (division: Division) => {
         setSelectedDivision(division);
         setView('leaderboard');
+        setVisiblePlayersCount(5);
     };
 
     const getPageTitle = () => {
@@ -139,7 +147,12 @@ export default function LeaguePage() {
         setClientReady(true);
     }, []);
     
-    const playersToShow = showAllPlayers ? mockPlayers : mockPlayers.slice(0, 5);
+    const playersToShow = sortedPlayers.slice(0, visiblePlayersCount);
+    const canLoadMore = visiblePlayersCount < sortedPlayers.length;
+
+    const handleLoadMore = () => {
+        setVisiblePlayersCount(prevCount => prevCount + 5);
+    };
 
   return (
     <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
@@ -193,8 +206,8 @@ export default function LeaguePage() {
                         {clientReady && playersToShow.map((player, index) => (
                             <PlayerRow key={player.id} player={player} rank={index + 1} />
                         ))}
-                         {mockPlayers.length > 5 && !showAllPlayers && (
-                            <Button variant="link" className="w-full text-primary" onClick={() => setShowAllPlayers(true)}>
+                         {canLoadMore && (
+                            <Button variant="link" className="w-full text-primary" onClick={handleLoadMore}>
                                 Показать больше
                                 <ChevronDown className="w-4 h-4 ml-1" />
                             </Button>
@@ -234,5 +247,3 @@ export default function LeaguePage() {
     </main>
   );
 }
-
-    
