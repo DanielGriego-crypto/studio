@@ -100,7 +100,7 @@ export default function Home() {
             </Dialog>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="/league">
+                <Link href="/league" passHref>
                   <Button variant="ghost" size="icon" className="h-9 w-9 text-xs">
                       <Trophy className="w-5 h-5 text-primary" />
                   </Button>
