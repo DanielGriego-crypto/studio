@@ -123,7 +123,7 @@ export default function LeaguePage() {
 
     const getPageTitle = () => {
         if (view === 'all_divisions') return 'Все дивизионы';
-        return `Лидеры: ${divisionToShow.name}`;
+        return divisionToShow.name;
     }
 
   return (
@@ -142,7 +142,7 @@ export default function LeaguePage() {
               </Button>
             </Link>
         )}
-        <h1 className="font-headline text-xl font-bold text-primary text-center flex-1">
+        <h1 className="font-headline text-xl font-bold text-primary text-center flex-1 uppercase">
           {getPageTitle()}
         </h1>
         <div className="w-10"></div> {/* Spacer to balance the header */}
@@ -154,7 +154,7 @@ export default function LeaguePage() {
                  <Card className="w-full bg-black/50 backdrop-blur-sm border-none text-center mb-4">
                     <CardHeader className="pb-2">
                         <CardDescription className="text-white/70">Ваш текущий дивизион</CardDescription>
-                        <CardTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400 flex items-center justify-center gap-2" style={{ textShadow: '0 0 10px hsl(var(--primary) / 0.5)' }}>
+                        <CardTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400 flex items-center justify-center gap-2 uppercase" style={{ textShadow: '0 0 10px hsl(var(--primary) / 0.5)' }}>
                             <divisionToShow.Icon className="w-7 h-7" />
                             {divisionToShow.name}
                         </CardTitle>
