@@ -32,7 +32,7 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
     return (
         <DialogContent className="bg-background/80 border-primary/20 backdrop-blur-lg max-w-sm">
             <DialogHeader>
-                <DialogTitle className="font-headline text-2xl text-primary text-center">CAissa Friends</DialogTitle>
+                <DialogTitle className="font-headline text-2xl text-primary text-center">CAÏSSA FRIENDS</DialogTitle>
                 <DialogDescription className="text-center text-white/70 pt-2">
                     Приглашайте друзей и получайте награды вместе!
                 </DialogDescription>
@@ -78,5 +78,6 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
 }
 
     
+
 
 
