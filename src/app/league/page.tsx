@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Users, Medal, ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowLeft, Users, Medal, ArrowUp, ArrowDown, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Particles from '@/components/caissa/particles';
 import { cn } from '@/lib/utils';
@@ -56,6 +56,8 @@ const mockPlayers = [
     { id: '4', name: 'Rook_Star', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026706d', elo: 1320, rankChange: 78 },
     { id: '5', name: 'Bishop_Bob', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026707d', elo: 1290, rankChange: -20 },
     { id: '6', name: 'PawnMaster', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026708d', elo: 1250, rankChange: 0 },
+    { id: '7', name: 'Checkmate_Champ', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026709d', elo: 1220, rankChange: 42 },
+    { id: '8', name: 'Knight_Rider', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026710d', elo: 1180, rankChange: -8 },
 ].sort((a, b) => b.elo - a.elo);
 
 const getRankColor = (rank: number) => {
@@ -67,16 +69,16 @@ const getRankColor = (rank: number) => {
 
 const PlayerRow = ({ player, rank }: { player: typeof mockPlayers[0], rank: number }) => (
     <div className={cn(
-        "flex items-center gap-3 bg-black/40 p-2.5 rounded-lg border",
+        "flex items-center gap-3 bg-black/40 p-2 rounded-lg border",
         player.isCurrentUser ? "border-primary/50" : "border-white/10"
     )}>
-        <span className={cn("font-bold text-base w-6 text-center", player.isCurrentUser ? "text-primary": "text-white/70")}>
+        <span className={cn("font-bold text-base w-6 text-center", player.isCurrentUser ? "text-primary": getRankColor(rank))}>
             {rank}
         </span>
         {rank <= 3 ? (
             <Medal className={cn("w-5 h-5", getRankColor(rank))} />
         ) : <div className="w-5 h-5" /> }
-        <Avatar className="h-9 w-9 border-2 border-primary/30">
+        <Avatar className="h-8 w-8 border-2 border-primary/30">
             <AvatarImage src={player.avatar} />
             <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
         </Avatar>
@@ -102,7 +104,8 @@ export default function LeaguePage() {
     const [balance] = React.useState(1350); // Mock balance
     const [selectedDivision, setSelectedDivision] = React.useState<Division | null>(null);
     const [view, setView] = React.useState<'leaderboard' | 'all_divisions'>('leaderboard');
-    
+    const [showAllPlayers, setShowAllPlayers] = React.useState(false);
+
     const currentDivision = getDivision(balance);
     const currentUserRank = mockPlayers.findIndex(p => p.isCurrentUser) + 1;
     
@@ -114,7 +117,7 @@ export default function LeaguePage() {
 
 
     const handleBack = () => {
-        if (view === 'leaderboard' && selectedDivision) {
+        if (view === 'leaderboard' && selectedDivision && selectedDivision.name !== currentDivision.name) {
             setSelectedDivision(null);
         } else if (view === 'all_divisions') {
             setView('leaderboard');
@@ -135,6 +138,8 @@ export default function LeaguePage() {
     React.useEffect(() => {
         setClientReady(true);
     }, []);
+    
+    const playersToShow = showAllPlayers ? mockPlayers : mockPlayers.slice(0, 5);
 
   return (
     <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
@@ -185,9 +190,15 @@ export default function LeaguePage() {
                         <TabsTrigger value="owners">Владельцы</TabsTrigger>
                     </TabsList>
                     <TabsContent value="players" className="mt-4 space-y-2">
-                        {clientReady && mockPlayers.map((player, index) => (
+                        {clientReady && playersToShow.map((player, index) => (
                             <PlayerRow key={player.id} player={player} rank={index + 1} />
                         ))}
+                         {mockPlayers.length > 5 && !showAllPlayers && (
+                            <Button variant="link" className="w-full text-primary" onClick={() => setShowAllPlayers(true)}>
+                                Показать больше
+                                <ChevronDown className="w-4 h-4 ml-1" />
+                            </Button>
+                        )}
                     </TabsContent>
                     <TabsContent value="owners" className="mt-4 text-center text-white/70 p-4 bg-black/30 rounded-lg">
                         <p>Здесь будут показаны владельцы $CAI, которые поддерживают дивизион, но не участвуют в играх.</p>
@@ -223,3 +234,5 @@ export default function LeaguePage() {
     </main>
   );
 }
+
+    
