@@ -73,7 +73,7 @@ export default function Home() {
       <header className="absolute top-0 right-0 p-6 z-20">
         <Link href="/wallet" passHref>
           <div className="bg-black/50 backdrop-blur-sm text-primary font-bold px-4 py-2 rounded-lg border border-primary/20 shadow-lg cursor-pointer hover:bg-primary/10 transition-colors">
-            Баланс: {balance !== null ? balance.toLocaleString('ru-RU') : '...'} $CAI
+            {balance !== null ? balance.toLocaleString('ru-RU') : '...'} $CAI
           </div>
         </Link>
       </header>
@@ -92,7 +92,7 @@ export default function Home() {
 
         <div className="w-full pt-8">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-primary rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-primary rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
               <Button 
                 size="lg" 
                 className="relative w-full h-16 text-lg font-bold rounded-full bg-gradient-to-br from-primary to-yellow-600 text-primary-foreground shadow-lg shadow-primary/20 ring-2 ring-primary/50 hover:shadow-primary/40 hover:scale-105 transition-all duration-300 font-headline tracking-wider overflow-hidden group"
