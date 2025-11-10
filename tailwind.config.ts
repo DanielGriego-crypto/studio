@@ -94,21 +94,11 @@ export default {
             transform: 'rotate(360deg)',
           },
         },
-        'breathing': {
-          '0%, 100%': { transform: 'scale(1)', boxShadow: '0 0 20px hsl(var(--primary) / 0.4)' },
-          '50%': { transform: 'scale(1.03)', boxShadow: '0 0 30px hsl(var(--primary) / 0.6)' },
-        },
-        'glow': {
-          '0%, 100%': { opacity: '0.75' },
-          '50%': { opacity: '1' },
-        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'spin-slow': 'spin-slow 20s linear infinite',
-        'breathing': 'breathing 3s ease-in-out infinite',
-        'glow': 'glow 3s ease-in-out infinite',
       },
     },
   },

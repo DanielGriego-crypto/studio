@@ -53,13 +53,15 @@ export default function Home() {
 
         <div className="w-full pt-8">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-primary rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-glow"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-primary rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
               <Button 
                 size="lg" 
-                className="relative w-full h-16 text-lg font-bold rounded-full bg-gradient-to-br from-primary to-yellow-600 text-primary-foreground shadow-lg shadow-primary/20 ring-2 ring-primary/50 hover:shadow-primary/40 hover:scale-105 transition-all duration-300 font-headline tracking-wider animate-breathing"
+                className="relative w-full h-16 text-lg font-bold rounded-full bg-gradient-to-br from-primary to-yellow-600 text-primary-foreground shadow-lg shadow-primary/20 ring-2 ring-primary/50 hover:shadow-primary/40 hover:scale-105 transition-all duration-300 font-headline tracking-wider overflow-hidden"
                 onClick={() => setShowGameOptions(!showGameOptions)}
               >
-                {showGameOptions ? 'Закрыть' : 'Заработать $CAI'}
+                <span className="relative z-10">{showGameOptions ? 'Закрыть' : 'Заработать $CAI'}</span>
+                <span className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
+                <span className="absolute inset-0 scale-0 group-hover:scale-125 transition-transform duration-500 ease-out bg-white/30 rounded-full"></span>
               </Button>
             </div>
         </div>
