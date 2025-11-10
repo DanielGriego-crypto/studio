@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DIVISIONS, getDivision, Division } from '@/lib/caissa/divisions';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
@@ -128,11 +129,20 @@ export default function LeaguePage() {
       
       <div className="flex-1 flex flex-col items-center justify-start pt-20 px-4 z-10 overflow-y-auto no-scrollbar pb-4">
         {selectedDivision ? (
-            <div className="w-full space-y-2">
-                {mockPlayers.map((player, index) => (
-                    <PlayerRow key={player.id} player={player} rank={index + 1} />
-                ))}
-            </div>
+             <Tabs defaultValue="players" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 bg-black/50 border border-primary/20">
+                    <TabsTrigger value="players">Игроки</TabsTrigger>
+                    <TabsTrigger value="owners">Владельцы</TabsTrigger>
+                </TabsList>
+                <TabsContent value="players" className="mt-4 space-y-2">
+                    {mockPlayers.map((player, index) => (
+                        <PlayerRow key={player.id} player={player} rank={index + 1} />
+                    ))}
+                </TabsContent>
+                <TabsContent value="owners" className="mt-4 text-center text-white/70">
+                    <p>Скоро здесь появятся владельцы дивизиона.</p>
+                </TabsContent>
+            </Tabs>
         ) : (
             <>
                 <Card className="w-full bg-black/50 backdrop-blur-sm border-none text-center mb-6">
