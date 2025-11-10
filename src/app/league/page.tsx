@@ -4,7 +4,6 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Users, Medal, ArrowUp, ArrowDown, ChevronDown, RefreshCw } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import Particles from '@/components/caissa/particles';
 import { cn } from '@/lib/utils';
@@ -74,12 +73,7 @@ const getRankColor = (rank: number) => {
 }
 
 const PlayerRow = ({ player, rank }: { player: typeof initialMockPlayers[0], rank: number }) => (
-    <motion.div 
-        layout
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+    <div 
         className={cn(
             "flex items-center gap-3 bg-black/40 p-2 rounded-lg border",
             player.isCurrentUser ? "border-primary/50" : "border-white/10"
@@ -115,7 +109,7 @@ const PlayerRow = ({ player, rank }: { player: typeof initialMockPlayers[0], ran
                 <p>Изменение за 2 часа ({player.gamesPlayed} игр)</p>
             </TooltipContent>
         </Tooltip>
-    </motion.div>
+    </div>
 );
 
 
@@ -242,11 +236,9 @@ export default function LeaguePage() {
                         <TabsTrigger value="owners">Владельцы</TabsTrigger>
                     </TabsList>
                     <TabsContent value="players" className="mt-4 space-y-2">
-                        <AnimatePresence>
-                            {clientReady && playersToShow.map((player, index) => (
-                                <PlayerRow key={player.id} player={player} rank={index + 1} />
-                            ))}
-                        </AnimatePresence>
+                        {clientReady && playersToShow.map((player, index) => (
+                            <PlayerRow key={player.id} player={player} rank={index + 1} />
+                        ))}
                          {canLoadMore && (
                             <Button variant="link" className="w-full text-primary" onClick={handleLoadMore}>
                                 Показать больше
