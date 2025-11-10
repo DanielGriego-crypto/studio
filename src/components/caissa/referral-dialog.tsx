@@ -47,7 +47,7 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
     };
 
     return (
-        <DialogContent className="bg-background/80 border-primary/20 backdrop-blur-lg max-w-sm p-0 h-[600px] sm:h-[550px] flex flex-col">
+        <DialogContent className="bg-background/80 border-primary/20 backdrop-blur-lg max-w-sm p-0 flex flex-col">
             <div className={cn("transition-opacity duration-300 w-full h-full flex flex-col", activeView !== 'main' ? 'opacity-0 pointer-events-none absolute' : 'opacity-100')}>
                 <DialogHeader className="p-6 pb-2 shrink-0">
                     <DialogTitle className="font-headline text-2xl text-primary text-center">CAÏSSA FRIENDS</DialogTitle>
@@ -55,7 +55,7 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
                         Приобщайте людей к интелектуальной борьбе и получайте награды вместе!
                     </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4 px-6 pb-6 pt-4 overflow-y-auto flex-1">
+                <div className="space-y-4 px-6 pb-6 pt-4 flex-1">
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-white/80">Ваша реферальная ссылка</label>
                         <div className="flex items-center space-x-2">
