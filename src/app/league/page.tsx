@@ -17,6 +17,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DIVISIONS, getDivision, Division } from '@/lib/caissa/divisions';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const DivisionCard = ({ division, isCurrent, onClick }: { division: Division, isCurrent: boolean, onClick: () => void }) => {
     const { Icon, name, minBalance, maxBalance } = division;
@@ -50,19 +51,19 @@ const DivisionCard = ({ division, isCurrent, onClick }: { division: Division, is
 };
 
 const mockPlayers = [
-    { id: '1', name: 'You', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026703d', elo: 1350, rankChange: 35, isCurrentUser: true },
-    { id: '2', name: 'Grandmaster_G', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d', elo: 1420, rankChange: -12 },
-    { id: '3', name: 'ChessQueen', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026705d', elo: 1380, rankChange: 5 },
-    { id: '4', name: 'Rook_Star', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026706d', elo: 1320, rankChange: 78 },
-    { id: '5', name: 'Bishop_Bob', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026707d', elo: 1290, rankChange: -20 },
-    { id: '6', name: 'PawnMaster', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026708d', elo: 1250, rankChange: 0 },
-    { id: '7', name: 'Checkmate_Champ', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026709d', elo: 1220, rankChange: 42 },
-    { id: '8', name: 'Knight_Rider', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026710d', elo: 1180, rankChange: -8 },
-    { id: '9', name: 'Player9', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026701d', elo: 1150, rankChange: 15 },
-    { id: '10', name: 'Player10', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026702d', elo: 1120, rankChange: -5 },
-    { id: '11', name: 'Player11', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026711d', elo: 1100, rankChange: 22 },
-    { id: '12', name: 'Player12', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026712d', elo: 1080, rankChange: -3 },
-].sort((a, b) => b.elo - a.elo);
+    { id: '1', name: 'You', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026703d', cai: 1350, rankChange: 35, isCurrentUser: true, gamesPlayed: 5 },
+    { id: '2', name: 'Grandmaster_G', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d', cai: 1420, rankChange: -12, gamesPlayed: 8 },
+    { id: '3', name: 'ChessQueen', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026705d', cai: 1380, rankChange: 5, gamesPlayed: 2 },
+    { id: '4', name: 'Rook_Star', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026706d', cai: 1320, rankChange: 78, gamesPlayed: 10 },
+    { id: '5', name: 'Bishop_Bob', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026707d', cai: 1290, rankChange: -20, gamesPlayed: 4 },
+    { id: '6', name: 'PawnMaster', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026708d', cai: 1250, rankChange: 0, gamesPlayed: 0 },
+    { id: '7', name: 'Checkmate_Champ', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026709d', cai: 1220, rankChange: 42, gamesPlayed: 6 },
+    { id: '8', name: 'Knight_Rider', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026710d', cai: 1180, rankChange: -8, gamesPlayed: 3 },
+    { id: '9', name: 'Player9', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026701d', cai: 1150, rankChange: 15, gamesPlayed: 1 },
+    { id: '10', name: 'Player10', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026702d', cai: 1120, rankChange: -5, gamesPlayed: 2 },
+    { id: '11', name: 'Player11', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026711d', cai: 1100, rankChange: 22, gamesPlayed: 4 },
+    { id: '12', name: 'Player12', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026712d', cai: 1080, rankChange: -3, gamesPlayed: 1 },
+].sort((a, b) => b.cai - a.cai);
 
 const getRankColor = (rank: number) => {
     if (rank === 1) return "text-yellow-400";
@@ -88,18 +89,25 @@ const PlayerRow = ({ player, rank }: { player: typeof mockPlayers[0], rank: numb
         </Avatar>
         <div className="flex-1">
             <p className={cn("font-semibold text-sm", player.isCurrentUser ? "text-primary": "text-white/90")}>{player.name}</p>
-            <p className="text-xs text-white/60 font-bold">{player.elo} ELO</p>
+            <p className="text-xs text-white/60 font-bold">{player.cai.toLocaleString('ru-RU')} $CAI</p>
         </div>
-        <div className={cn(
-            "flex items-center font-bold text-xs",
-            player.rankChange > 0 && "text-green-400",
-            player.rankChange < 0 && "text-red-400",
-            player.rankChange === 0 && "text-gray-500",
-        )}>
-            {player.rankChange > 0 && <ArrowUp className="w-3 h-3 mr-1" />}
-            {player.rankChange < 0 && <ArrowDown className="w-3 h-3 mr-1" />}
-            {player.rankChange !== 0 ? Math.abs(player.rankChange) : '-'}
-        </div>
+         <Tooltip>
+            <TooltipTrigger>
+                <div className={cn(
+                    "flex items-center font-bold text-xs",
+                    player.rankChange > 0 && "text-green-400",
+                    player.rankChange < 0 && "text-red-400",
+                    player.rankChange === 0 && "text-gray-500",
+                )}>
+                    {player.rankChange > 0 && <ArrowUp className="w-3 h-3 mr-1" />}
+                    {player.rankChange < 0 && <ArrowDown className="w-3 h-3 mr-1" />}
+                    {player.rankChange !== 0 ? Math.abs(player.rankChange) : '-'}
+                </div>
+            </TooltipTrigger>
+            <TooltipContent>
+                <p>Изменение за 2 часа ({player.gamesPlayed} игр)</p>
+            </TooltipContent>
+        </Tooltip>
     </div>
 );
 
@@ -112,7 +120,7 @@ export default function LeaguePage() {
 
     const currentDivision = getDivision(balance);
     
-    const sortedPlayers = React.useMemo(() => [...mockPlayers].sort((a, b) => b.elo - a.elo), []);
+    const sortedPlayers = React.useMemo(() => [...mockPlayers].sort((a, b) => b.cai - a.cai), []);
     const currentUserRank = sortedPlayers.findIndex(p => p.isCurrentUser) + 1;
     
     const divisionToShow = selectedDivision || currentDivision;
@@ -151,10 +159,11 @@ export default function LeaguePage() {
     const canLoadMore = visiblePlayersCount < sortedPlayers.length;
 
     const handleLoadMore = () => {
-        setVisiblePlayersCount(prevCount => prevCount + 5);
+        setVisiblePlayersCount(prevCount => Math.min(prevCount + 5, sortedPlayers.length));
     };
 
   return (
+    <TooltipProvider>
     <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
       <Particles quantity={30} />
       
@@ -245,5 +254,6 @@ export default function LeaguePage() {
         }
       `}</style>
     </main>
+    </TooltipProvider>
   );
 }
