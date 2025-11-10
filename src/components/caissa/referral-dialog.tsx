@@ -2,7 +2,7 @@
 'use client';
 
 import * as React from 'react';
-import { Copy, Check, Users, Gift, TrendingUp, X, History } from 'lucide-react';
+import { Copy, Check, Users, Gift, TrendingUp, X, History, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -32,7 +32,8 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
     const [hasCopied, setHasCopied] = React.useState(false);
     const [activeView, setActiveView] = React.useState('main'); // 'main', 'referrals', 'earnings'
     const referralLink = `https://t.me/caisssachess_bot?start=${referralCode}`;
-    const referralCount = 0; // Mock data
+    const referralCount = mockReferrals.length;
+    const totalEarnings = mockEarnings.reduce((acc, curr) => acc + curr.amount, 0);
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(referralLink).then(() => {
@@ -46,7 +47,7 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
     };
 
     return (
-        <DialogContent className="bg-background/80 border-primary/20 backdrop-blur-lg max-w-sm p-0 overflow-hidden h-[550px]">
+        <DialogContent className="bg-background/80 border-primary/20 backdrop-blur-lg max-w-sm p-0 overflow-hidden h-[600px] sm:h-[550px]">
             <div className={cn("transition-opacity duration-300 w-full h-full", activeView !== 'main' ? 'opacity-0 pointer-events-none absolute' : 'opacity-100')}>
                 <DialogHeader className="p-6 pb-2">
                     <DialogTitle className="font-headline text-2xl text-primary text-center">CAÏSSA FRIENDS</DialogTitle>
@@ -54,7 +55,7 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
                         Приобщайте людей к интелектуальной борьбе и получайте награды вместе!
                     </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-6 px-6 pb-6 pt-4">
+                <div className="space-y-4 px-6 pb-6 pt-4">
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-white/80">Ваша реферальная ссылка</label>
                         <div className="flex items-center space-x-2">
@@ -80,6 +81,12 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
                             <p className="text-xl font-bold text-white">+50 <span className="text-sm">$CAI</span></p>
                             <p className="text-xs text-white/60">За друга</p>
                         </div>
+                    </div>
+                    
+                    <div className="bg-black/40 p-4 rounded-lg border border-white/10 text-center">
+                        <Wallet className="w-6 h-6 mx-auto text-primary mb-2" />
+                        <p className="text-2xl font-bold text-white">{totalEarnings.toLocaleString('ru-RU', { minimumFractionDigits: 2 })} <span className="text-sm">$CAI</span></p>
+                        <p className="text-xs text-white/60">Всего заработано</p>
                     </div>
 
                     <button onClick={() => setActiveView('earnings')} className="w-full bg-black/40 p-4 rounded-lg border border-white/10 flex items-center gap-4 text-left hover:border-primary/50 transition-colors">
