@@ -62,6 +62,7 @@ export default function Home() {
   return (
     <TooltipProvider>
       <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
+        <div className="absolute inset-0 -z-10 animate-gradient-bg bg-gradient-to-br from-background via-yellow-950/20 to-background" />
         <Particles quantity={50} />
 
         {/* Backdrop */}
@@ -75,15 +76,15 @@ export default function Home() {
         {/* Header */}
         <header className="absolute top-0 left-0 right-0 p-4 z-20 flex justify-between items-center gap-2">
           <Link href="/wallet" passHref>
-            <Button variant="ghost" size="sm" className="text-sm h-8 bg-black/50 backdrop-blur-sm border border-primary/20 shadow-lg text-primary font-bold hover:bg-primary/10 transition-colors">
+            <Button variant="ghost" size="sm" className="text-sm h-10 bg-black/50 backdrop-blur-sm border border-primary/20 shadow-lg text-primary font-bold hover:bg-primary/10 transition-colors">
               {balance !== null ? balance.toLocaleString('ru-RU') : '...'} <span className="text-yellow-400 ml-1">$CAI</span>
             </Button>
           </Link>
-          <div className="flex justify-end bg-black/50 backdrop-blur-sm p-1 rounded-lg border border-primary/20 shadow-lg gap-1">
+          <div className="flex justify-end bg-black/50 backdrop-blur-sm p-2 rounded-xl border border-primary/20 shadow-lg gap-1">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-xs">
-                  <Star className="w-4 h-4 text-primary" />
+                <Button variant="ghost" size="icon" className="h-9 w-9 text-xs">
+                  <Star className="w-5 h-5 text-primary" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -93,8 +94,8 @@ export default function Home() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link href="/league">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-xs">
-                      <Trophy className="w-4 h-4 text-primary" />
+                  <Button variant="ghost" size="icon" className="h-9 w-9 text-xs">
+                      <Trophy className="w-5 h-5 text-primary" />
                   </Button>
                 </Link>
               </TooltipTrigger>
@@ -104,8 +105,8 @@ export default function Home() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-xs">
-                  <Paintbrush className="w-4 h-4 text-primary" />
+                <Button variant="ghost" size="icon" className="h-9 w-9 text-xs">
+                  <Paintbrush className="w-5 h-5 text-primary" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
