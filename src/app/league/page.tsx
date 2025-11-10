@@ -258,6 +258,10 @@ export default function LeaguePage() {
                     </CardContent>
                 </Card>
 
+                <Button variant="outline" className="w-full mb-4 bg-black/50 border-primary/30" onClick={() => setView('all_divisions')}>
+                    <Users className="mr-2 h-4 w-4" /> Посмотреть все дивизионы
+                </Button>
+
                 <Tabs defaultValue="players" className="w-full">
                     <TabsList className="grid w-full grid-cols-2 bg-black/50 border border-primary/20">
                         <TabsTrigger value="players">Игроки</TabsTrigger>
@@ -278,10 +282,6 @@ export default function LeaguePage() {
                         <p>Здесь будут показаны владельцы $CAI, которые поддерживают дивизион, но не участвуют в играх.</p>
                     </TabsContent>
                 </Tabs>
-                
-                <Button variant="outline" className="w-full mt-6 bg-black/50 border-primary/30" onClick={() => setView('all_divisions')}>
-                    <Users className="mr-2 h-4 w-4" /> Посмотреть все дивизионы
-                </Button>
             </>
         ) : (
             <div className="w-full mt-4 space-y-3">
