@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Crown, Users, BarChart } from 'lucide-react';
+import { ArrowLeft, Crown, Users, BarChart, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Particles from '@/components/caissa/particles';
 import { cn } from '@/lib/utils';
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { DIVISIONS, getDivision, Division } from '@/lib/caissa/divisions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 const DivisionCard = ({ division, isCurrent }: { division: Division, isCurrent: boolean }) => {
     const { Icon, name, minBalance, maxBalance } = division;
@@ -40,8 +41,46 @@ const DivisionCard = ({ division, isCurrent }: { division: Division, isCurrent: 
     );
 };
 
+const mockPlayers = [
+    { id: '1', name: 'You', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026703d', elo: 1350, rankChange: 35, isCurrentUser: true },
+    { id: '2', name: 'Grandmaster_G', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d', elo: 1420, rankChange: -12 },
+    { id: '3', name: 'ChessQueen', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026705d', elo: 1380, rankChange: 5 },
+    { id: '4', name: 'Rook_Star', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026706d', elo: 1320, rankChange: 78 },
+    { id: '5', name: 'Bishop_Bob', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026707d', elo: 1290, rankChange: -20 },
+    { id: '6', name: 'PawnMaster', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026708d', elo: 1250, rankChange: 0 },
+].sort((a, b) => b.elo - a.elo);
+
+
+const PlayerRow = ({ player, rank }: { player: typeof mockPlayers[0], rank: number }) => (
+    <div className={cn(
+        "flex items-center gap-3 bg-black/40 p-3 rounded-lg border",
+        player.isCurrentUser ? "border-primary/50" : "border-white/10"
+    )}>
+        <span className={cn("font-bold text-lg w-6 text-center", player.isCurrentUser ? "text-primary": "text-white/70")}>{rank}</span>
+        <Avatar className="h-10 w-10 border-2 border-primary/30">
+            <AvatarImage src={player.avatar} />
+            <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
+        </Avatar>
+        <div className="flex-1">
+            <p className={cn("font-semibold", player.isCurrentUser ? "text-primary": "text-white/90")}>{player.name}</p>
+            <p className="text-sm text-white/60 font-bold">{player.elo} ELO</p>
+        </div>
+        <div className={cn(
+            "flex items-center font-bold text-sm",
+            player.rankChange > 0 && "text-green-400",
+            player.rankChange < 0 && "text-red-400",
+            player.rankChange === 0 && "text-gray-500",
+        )}>
+            {player.rankChange > 0 && <ArrowUp className="w-4 h-4 mr-1" />}
+            {player.rankChange < 0 && <ArrowDown className="w-4 h-4 mr-1" />}
+            {player.rankChange !== 0 ? Math.abs(player.rankChange) : '-'}
+        </div>
+    </div>
+);
+
+
 export default function LeaguePage() {
-    const [balance] = React.useState(7500); // Mock balance
+    const [balance] = React.useState(1350); // Mock balance
     const currentDivision = getDivision(balance);
 
   return (
@@ -74,7 +113,7 @@ export default function LeaguePage() {
         <Tabs defaultValue="divisions" className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-black/50 border border-primary/20">
                 <TabsTrigger value="divisions"><Crown className="w-4 h-4 mr-2"/>Дивизионы</TabsTrigger>
-                <TabsTrigger value="players" disabled><Users className="w-4 h-4 mr-2"/>Игроки</TabsTrigger>
+                <TabsTrigger value="players"><Users className="w-4 h-4 mr-2"/>Игроки</TabsTrigger>
                 <TabsTrigger value="holders" disabled><BarChart className="w-4 h-4 mr-2"/>Владельцы</TabsTrigger>
             </TabsList>
             <TabsContent value="divisions" className="mt-4 space-y-3">
@@ -82,8 +121,10 @@ export default function LeaguePage() {
                     <DivisionCard key={division.name} division={division} isCurrent={division.name === currentDivision.name} />
                 ))}
             </TabsContent>
-            <TabsContent value="players">
-                <p className="text-center text-muted-foreground mt-8">Скоро здесь появятся лучшие игроки.</p>
+            <TabsContent value="players" className="mt-4 space-y-3">
+                 {mockPlayers.map((player, index) => (
+                    <PlayerRow key={player.id} player={player} rank={index + 1} />
+                ))}
             </TabsContent>
             <TabsContent value="holders">
                 <p className="text-center text-muted-foreground mt-8">Скоро здесь появятся крупнейшие владельцы $CAI.</p>
