@@ -122,9 +122,14 @@ export default function LeaguePage() {
     };
 
     const getPageTitle = () => {
-        if (view === 'all_divisions') return 'Все дивизионы';
+        if (view === 'all_divisions') return 'Дивизионы';
         return divisionToShow.name;
     }
+
+    const [clientReady, setClientReady] = React.useState(false);
+    React.useEffect(() => {
+        setClientReady(true);
+    }, []);
 
   return (
     <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
@@ -170,7 +175,7 @@ export default function LeaguePage() {
                         <TabsTrigger value="owners">Владельцы</TabsTrigger>
                     </TabsList>
                     <TabsContent value="players" className="mt-4 space-y-2">
-                        {mockPlayers.map((player, index) => (
+                        {clientReady && mockPlayers.map((player, index) => (
                             <PlayerRow key={player.id} player={player} rank={index + 1} />
                         ))}
                     </TabsContent>
