@@ -150,6 +150,7 @@ export default function LeaguePage() {
 
     const getPageTitle = () => {
         if (view === 'all_divisions') return 'Дивизионы';
+        if (selectedDivision) return selectedDivision.name;
         return 'Лиги';
     }
 
