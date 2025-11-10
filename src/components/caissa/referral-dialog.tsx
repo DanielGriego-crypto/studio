@@ -34,7 +34,7 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
             <DialogHeader>
                 <DialogTitle className="font-headline text-2xl text-primary text-center">CAÏSSA FRIENDS</DialogTitle>
                 <DialogDescription className="text-center text-white/70 pt-2">
-                    Приглашайте друзей и получайте награды вместе!
+                    Приобщайте людей к интелектуальной деятельности и получайте награды вместе!
                 </DialogDescription>
             </DialogHeader>
             <div className="space-y-6 py-4">
@@ -78,6 +78,3 @@ export function ReferralDialogContent({ referralCode }: ReferralDialogContentPro
 }
 
     
-
-
-
