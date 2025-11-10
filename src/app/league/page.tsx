@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Crown, Users, BarChart, ArrowUp, ArrowDown, Medal } from 'lucide-react';
+import { ArrowLeft, Users, Medal, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Particles from '@/components/caissa/particles';
 import { cn } from '@/lib/utils';
@@ -101,21 +101,37 @@ const PlayerRow = ({ player, rank }: { player: typeof mockPlayers[0], rank: numb
 export default function LeaguePage() {
     const [balance] = React.useState(1350); // Mock balance
     const [selectedDivision, setSelectedDivision] = React.useState<Division | null>(null);
+    const [view, setView] = React.useState<'leaderboard' | 'all_divisions'>('leaderboard');
+    
     const currentDivision = getDivision(balance);
     const currentUserRank = mockPlayers.findIndex(p => p.isCurrentUser) + 1;
+    
+    const divisionToShow = selectedDivision || currentDivision;
 
     const handleBack = () => {
-        setSelectedDivision(null);
-    }
+        if (view === 'leaderboard' && selectedDivision) {
+            setSelectedDivision(null);
+        } else if (view === 'all_divisions') {
+            setView('leaderboard');
+        }
+    };
     
-    const pageTitle = selectedDivision ? `Лидеры: ${selectedDivision.name}` : 'Лиги и Лидеры';
+    const handleDivisionClick = (division: Division) => {
+        setSelectedDivision(division);
+        setView('leaderboard');
+    };
+
+    const getPageTitle = () => {
+        if (view === 'all_divisions') return 'Все дивизионы';
+        return `Лидеры: ${divisionToShow.name}`;
+    }
 
   return (
     <main className="relative flex flex-col h-[100svh] w-full max-w-sm mx-auto bg-background overflow-hidden">
       <Particles quantity={30} />
       
       <header className="absolute top-0 left-0 right-0 p-4 z-20 flex items-center">
-        {selectedDivision ? (
+        {(view === 'all_divisions' || selectedDivision) ? (
             <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10" onClick={handleBack}>
                 <ArrowLeft className="h-6 w-6" />
             </Button>
@@ -126,36 +142,21 @@ export default function LeaguePage() {
               </Button>
             </Link>
         )}
-        <h1 className="font-headline text-2xl font-bold text-primary text-center flex-1">
-          {pageTitle}
+        <h1 className="font-headline text-xl font-bold text-primary text-center flex-1">
+          {getPageTitle()}
         </h1>
         <div className="w-10"></div> {/* Spacer to balance the header */}
       </header>
       
       <div className="flex-1 flex flex-col items-center justify-start pt-20 px-4 z-10 overflow-y-auto no-scrollbar pb-4">
-        {selectedDivision ? (
-             <Tabs defaultValue="players" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 bg-black/50 border border-primary/20">
-                    <TabsTrigger value="players">Игроки</TabsTrigger>
-                    <TabsTrigger value="owners">Владельцы</TabsTrigger>
-                </TabsList>
-                <TabsContent value="players" className="mt-4 space-y-2">
-                    {mockPlayers.map((player, index) => (
-                        <PlayerRow key={player.id} player={player} rank={index + 1} />
-                    ))}
-                </TabsContent>
-                <TabsContent value="owners" className="mt-4 text-center text-white/70">
-                    <p>Скоро здесь появятся владельцы дивизиона.</p>
-                </TabsContent>
-            </Tabs>
-        ) : (
+        {view === 'leaderboard' ? (
             <>
-                <Card className="w-full bg-black/50 backdrop-blur-sm border-none text-center mb-6">
+                 <Card className="w-full bg-black/50 backdrop-blur-sm border-none text-center mb-4">
                     <CardHeader className="pb-2">
                         <CardDescription className="text-white/70">Ваш текущий дивизион</CardDescription>
                         <CardTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-yellow-400 flex items-center justify-center gap-2" style={{ textShadow: '0 0 10px hsl(var(--primary) / 0.5)' }}>
-                            <currentDivision.Icon className="w-7 h-7" />
-                            {currentDivision.name}
+                            <divisionToShow.Icon className="w-7 h-7" />
+                            {divisionToShow.name}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -163,18 +164,36 @@ export default function LeaguePage() {
                     </CardContent>
                 </Card>
 
-                <div className="w-full mt-4 space-y-3">
-                    <h2 className="font-headline text-xl text-primary text-center">Все дивизионы</h2>
-                    {DIVISIONS.map((division) => (
-                        <DivisionCard 
-                            key={division.name} 
-                            division={division} 
-                            isCurrent={division.name === currentDivision.name}
-                            onClick={() => setSelectedDivision(division)}
-                        />
-                    ))}
-                </div>
+                <Tabs defaultValue="players" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 bg-black/50 border border-primary/20">
+                        <TabsTrigger value="players">Игроки</TabsTrigger>
+                        <TabsTrigger value="owners">Владельцы</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="players" className="mt-4 space-y-2">
+                        {mockPlayers.map((player, index) => (
+                            <PlayerRow key={player.id} player={player} rank={index + 1} />
+                        ))}
+                    </TabsContent>
+                    <TabsContent value="owners" className="mt-4 text-center text-white/70 p-4 bg-black/30 rounded-lg">
+                        <p>Здесь будут показаны владельцы $CAI, которые поддерживают дивизион, но не участвуют в играх.</p>
+                    </TabsContent>
+                </Tabs>
+                
+                <Button variant="outline" className="w-full mt-6 bg-black/50 border-primary/30" onClick={() => setView('all_divisions')}>
+                    <Users className="mr-2 h-4 w-4" /> Посмотреть все дивизионы
+                </Button>
             </>
+        ) : (
+            <div className="w-full mt-4 space-y-3">
+                {DIVISIONS.map((division) => (
+                    <DivisionCard 
+                        key={division.name} 
+                        division={division} 
+                        isCurrent={division.name === currentDivision.name}
+                        onClick={() => handleDivisionClick(division)}
+                    />
+                ))}
+            </div>
         )}
       </div>
        <style jsx global>{`
