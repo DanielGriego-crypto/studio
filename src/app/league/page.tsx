@@ -123,7 +123,9 @@ export default function LeaguePage() {
 
     const getPageTitle = () => {
         if (view === 'all_divisions') return 'Дивизионы';
-        return divisionToShow.name;
+        if (selectedDivision) return selectedDivision.name;
+        if (currentDivision && !selectedDivision) return currentDivision.name;
+        return 'Лиги';
     }
 
     const [clientReady, setClientReady] = React.useState(false);
@@ -148,7 +150,7 @@ export default function LeaguePage() {
             </Link>
         )}
         <h1 className="font-headline text-xl font-bold text-primary text-center flex-1 uppercase">
-          {getPageTitle()}
+          Лиги
         </h1>
         <div className="w-10"></div> {/* Spacer to balance the header */}
       </header>
