@@ -72,9 +72,9 @@ export default function Home() {
       {/* Header */}
       <header className="absolute top-0 left-0 right-0 p-4 z-20 flex justify-between items-center gap-2">
         <Link href="/wallet" passHref>
-          <div className="bg-black/50 backdrop-blur-sm text-primary font-bold px-4 py-2 rounded-lg border border-primary/20 shadow-lg cursor-pointer hover:bg-primary/10 transition-colors text-lg">
-            {balance !== null ? balance.toLocaleString('ru-RU') : '...'} <span className="text-yellow-400">$CAI</span>
-          </div>
+          <Button variant="ghost" size="sm" className="text-sm h-8 bg-black/50 backdrop-blur-sm border border-primary/20 shadow-lg text-primary font-bold hover:bg-primary/10 transition-colors">
+            {balance !== null ? balance.toLocaleString('ru-RU') : '...'} <span className="text-yellow-400 ml-1">$CAI</span>
+          </Button>
         </Link>
         <div className="flex-1 flex justify-end bg-black/50 backdrop-blur-sm p-1 rounded-lg border border-primary/20 shadow-lg gap-1">
           <Button variant="ghost" size="sm" className="flex-1 text-xs h-8">
