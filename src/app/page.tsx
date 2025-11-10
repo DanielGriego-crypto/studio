@@ -102,7 +102,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <Link href="/league" passHref>
                   <Button variant="ghost" size="icon" className="h-9 w-9 text-xs">
-                      <Trophy className="w-5 h-5 text-primary" />
+                    <Trophy className="w-5 h-5 text-primary" />
                   </Button>
                 </Link>
               </TooltipTrigger>
